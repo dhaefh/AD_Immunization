@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Preprocess RNA data with Seurat
+# Summary: Preprocess Space Ranger output with Seurat
 #
 #-------------------------------------------------------------------------------
 # Initialization 
@@ -26,7 +26,6 @@ suppressMessages({
 # Define input and output folders
 input_folder <- "/path/to/spaceranger/output"
 output_folder <- "/path/to/preprocessing/folder"
-anno_folder <- "/path/to/manual/layer/annotations"
 
 # Define paths to sample-level Space Ranger output 
 all_samples <- list.dirs(input_folder, recursive = FALSE)
@@ -74,14 +73,6 @@ for (cur_sample in all_samples) {
   print(sum(rownames(spatial_df) != rownames(cur_s@meta.data)))
   print(sum(is.na(spatial_df)))
   cur_s <- AddMetaData(cur_s, metadata = spatial_df)
-  
-  # Add manual annotations 
-  cur_anno <- read.csv(paste0(anno_folder, "/", cur_slice, ".csv"))
-  rownames(cur_anno) <- cur_anno$Barcode
-  cur_anno <- cur_anno[rownames(cur_s@meta.data),]
-  print(sum(rownames(cur_anno) != rownames(cur_s@meta.data)))
-  print(sum(is.na(cur_anno)))
-  cur_s$manual_layer <- cur_anno$manual
   
   # Add sample ID to cell names
   cur_s <- RenameCells(object = cur_s, add.cell.id = cur_slice)

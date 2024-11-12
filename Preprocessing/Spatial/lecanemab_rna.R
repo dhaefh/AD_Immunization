@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Preprocess RNA data with Seurat
+# Summary: Preprocess Space Ranger output with Seurat
 #
 #-------------------------------------------------------------------------------
 # Initialization 
@@ -27,11 +27,8 @@ suppressMessages({
 input_folder <- "/path/to/input/data"
 output_folder <- "/path/to/preprocessing/folder"
 
-# Define paths to sample-level SpaceRanger output 
+# Define paths to sample-level Space Ranger output 
 all_samples <- list.dirs(paste0(input_folder, "/data"), recursive = FALSE)
-
-# Define paths to sample-level manual layer annotations
-annotation_folder <- paste0(input_folder, "/layers/")
 
 # Initialize list for sample objects 
 objects <- list()
@@ -70,13 +67,6 @@ for (cur_sample in all_samples) {
   spatial_df <- spatial_df[match(row.names(s@meta.data), row.names(spatial_df)),]
   s <- AddMetaData(s, metadata = spatial_df)
   
-  # Add manual annotations to meta data
-  cur_anno_file <- paste0(annotation_folder, cur_slice, ".csv")
-  anno_df <- read.csv(cur_anno_file)
-  row.names(anno_df) <- anno_df$Barcode
-  anno_df <- anno_df[match(row.names(s@meta.data), row.names(anno_df)),]
-  s[['Manual_Layer']] <- anno_df$manual
-  
   # Add sample ID to cell names
   s <- RenameCells(object = s, add.cell.id = cur_slice)
   s@meta.data$sample_id <- cur_slice
@@ -88,9 +78,6 @@ for (cur_sample in all_samples) {
 
 # Merge all samples
 all_samples_seurat <- merge(objects[[1]], objects[2:length(objects)], project = "cohort_5", merge.data = TRUE)
-
-# Correct manual layer spelling
-all_samples_seurat@meta.data$Manual_Layer[all_samples_seurat@meta.data$Manual_Layer == "non-hipppcampus"] <- "non-hippocampus"
 
 # Save merged Seurat object
 saveRDS(all_samples_seurat, glue("{output_folder}/all_samples_01_rna.rds"))

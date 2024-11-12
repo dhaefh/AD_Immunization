@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Preprocess RNA data with Seurat
+# Summary: Preprocess Space Ranger output with Seurat
 #
 #-------------------------------------------------------------------------------
 # Initialization
@@ -35,9 +35,6 @@ seurat_objects <- list()
 
 # Define paths to sample-level Space Ranger output 
 all_samples <- list.dirs(paste0(input_folder, "/cohort_1_data"), recursive = FALSE)
-
-# Define paths to sample-level manual layer annotations
-annotation_folder <- paste0(input_folder, "/cohort_1_layers/")
 
 # Initialize Seurat objects for each sample
 i <- 1
@@ -70,14 +67,6 @@ for (cur_sample in all_samples) {
   spatial_df <- spatial_df[match(row.names(cur_s@meta.data), row.names(spatial_df)),]
   cur_s <- AddMetaData(cur_s, metadata = spatial_df)
   
-  # Add manual annotations to meta data
-  cur_anno_file <- paste0(annotation_folder, cur_slice_raw, ".csv")
-  anno_df <- read.csv(cur_anno_file)
-  row.names(anno_df) <- anno_df$Barcode
-  anno_df <- anno_df[match(row.names(cur_s@meta.data), row.names(anno_df)),]
-  colnames(anno_df)[2] <- "manual"
-  cur_s[['manual_annotation']] <- anno_df$manual
-  
   # Add sample ID to cell names
   cur_s <- RenameCells(object = cur_s, add.cell.id = cur_slice)
   cur_s@meta.data$sample_id <- cur_slice
@@ -91,11 +80,8 @@ for (cur_sample in all_samples) {
 #-------------------------------------------------------------------------------
 # Preprocess cohort 6 samples
 
-# Define paths to sample-level SpaceRanger output 
+# Define paths to sample-level Space Ranger output 
 all_samples <- list.dirs(paste0(input_folder, "/cohort_6_data"), recursive = FALSE)
-
-# Define paths to sample-level manual layer annotations
-annotation_folder <- paste0(input_folder, "/cohort_6_layers/")
 
 # Initialize Seurat objects for each sample
 for (cur_sample in all_samples) {
@@ -126,14 +112,6 @@ for (cur_sample in all_samples) {
   row.names(spatial_df) <- spatial_df$barcode
   spatial_df <- spatial_df[match(row.names(cur_s@meta.data), row.names(spatial_df)),]
   cur_s <- AddMetaData(cur_s, metadata = spatial_df)
-  
-  # Add manual annotations to meta data
-  cur_anno_file <- paste0(annotation_folder, cur_slice_raw, ".csv")
-  anno_df <- read.csv(cur_anno_file)
-  row.names(anno_df) <- anno_df$Barcode
-  anno_df <- anno_df[match(row.names(cur_s@meta.data), row.names(anno_df)),]
-  colnames(anno_df)[2] <- "manual"
-  cur_s[['manual_annotation']] <- anno_df$manual
   
   # Add sample ID to cell names
   cur_s <- RenameCells(object = cur_s, add.cell.id = cur_slice)

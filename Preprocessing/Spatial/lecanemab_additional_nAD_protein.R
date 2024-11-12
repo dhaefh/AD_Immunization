@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Preprocess protein data with Seurat
+# Summary: Preprocess Space Ranger output with Seurat
 #
 #-------------------------------------------------------------------------------
 # Initialization 

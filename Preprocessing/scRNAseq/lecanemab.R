@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Preprocess scRNAseq data with SoupX 
+# Summary: Remove background contamination from scRNAseq data with SoupX 
 #
 #-------------------------------------------------------------------------------
 # Initialization
@@ -115,17 +115,15 @@ for (pool in names(cellranger_dirs)) {
   data_dir <- paste0(output_dir, "data/")
   dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
   
-  # Directories for sample-level cellranger output 
+  # List paths to sample-level cellranger output 
   sample_dirs <- list.dirs(cur_cellranger_dir, recursive = FALSE)
   print(sample_dirs)
   
   # Run SoupX
   rho <- lapply(sample_dirs, run_soupx)
   
-  # Get samples corresponding to contamination fractions
-  samples <- lapply(sample_dirs, get_samples)
-  
   # Export contamination fractions per sample
+  samples <- lapply(sample_dirs, get_samples)
   summary <- data.frame(sample = unlist(samples), rho = unlist(rho))
   write.csv(summary, file = paste0(output_dir, "/contamination_fractions.csv"))
 }
