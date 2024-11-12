@@ -60,24 +60,14 @@ for (i in 2:length(s_list)) {
   meta <- rbind(meta, cur_meta)
 }
 
-# Checks
-nrows <- 0
-for (s in s_list) {
-  nrows <- nrows + nrow(s@meta.data)
-}
-nrow(meta) == nrows
-sum(rownames(meta) != colnames(counts))
-length(unique(rownames(meta))) == nrow(meta)
-typeof(counts)
-
-# Create Seurat object with all sample data
+# Create Seurat object with merged counts
 s <- CreateSeuratObject(counts = counts, assay = "RNA", project = "AN1792_scFRP")
 
 # Save memory
 s_list <- NULL
 gc()
 
-# Add meta data and update orig.ident (default to first field in cell names, which excludes pool ID)
+# Update meta data
 sum(meta$nFeature_RNA != s$nFeature_RNA)
 sum(meta$nCount_RNA != s$nCount_RNA)
 sum(rownames(meta) != rownames(s@meta.data))
@@ -86,17 +76,17 @@ s@meta.data <- cbind(s@meta.data, meta[,4:ncol(meta)])
 sum(meta != s@meta.data)
 Idents(s) <- "orig.ident"
 
-# Split layers based on sample ID
+# Split layers by sample ID
 s[["RNA"]] <- split(s[["RNA"]], f = s$sample_id)
 
-# Extract meta data with full annotations before removing doublets
+# Extract meta data with full annotations before removing doublets (not adjusted for homotypic proportion)
 meta <- s@meta.data
 s <- subset(s, DF.unadj == "Singlet")
 
 # Save post-QC object
 saveRDS(s, file = paste0(output_dir, "data/s_post_qc.rds"))
 
-# Save annotations and doublets per sample
+# Save doublet summary data
 write.csv(table(meta$sample_id, meta$DF.unadj), paste0(output_dir, "data/doublet_table.csv"))
 write.csv(meta[,c("sample_id", "pool", "sample_barcode", "DF.unadj", "DF.adj")],
           paste0(output_dir, "data/doublet_annotations.csv"))

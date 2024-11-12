@@ -100,10 +100,10 @@ run_doubletfinder <- function(s) {
   return(s)
 }
 
-# Split into sample objects
+# Create list of sample objects
 s_list <- SplitObject(s, split.by = "sample_id")
 
-# Run DoubletFinder on all samples
+# Run DoubletFinder on each sample
 for (s in s_list) {
   s <- run_doubletfinder(s)
   saveRDS(s, paste0(object_dir, unique(s$sample_id), ".rds"))

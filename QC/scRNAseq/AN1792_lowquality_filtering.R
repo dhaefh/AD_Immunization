@@ -32,10 +32,7 @@ output_dir <- "/path/to/AN1792/QC/output/"
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(paste0(output_dir, "data"), recursive = TRUE, showWarnings = FALSE)
 
-# Filter operator
-`%notin%` <- Negate(`%in%`)
-
-# Create function to load Seurat objects (set rounded = FALSE to load non-integer SoupX counts)
+# Define function to load Seurat objects (set rounded = FALSE to load non-integer SoupX counts)
 load_seurat <- function(dir, id, rounded = TRUE) {
   
   if (rounded) {
@@ -53,11 +50,11 @@ pool_list <- list()
 for (pool in list.files("/path/to/AN1792/SoupX/output")) {
   soupx_dir <- paste0("/path/to/AN1792/SoupX/output/", pool, "/data")
   
-  # List SoupX corrected counts sample dirs
+  # List paths to SoupX corrected counts for each sample
   soupx_sample_dirs <- list.dirs(path = soupx_dir, full.names = TRUE, recursive = FALSE)
   print(soupx_sample_dirs)
   
-  # Get sample names and add pool ID for pool 1 and pool 2
+  # Extract sample names and add pool ID 
   samples <- str_split_fixed(soupx_sample_dirs, "/", str_count(soupx_sample_dirs[1], "/")+1)[,str_count(soupx_sample_dirs[1], "/")+1]
   samples <- str_replace_all(samples, "-", ".")
   if (str_detect(pool, "pool")) {
@@ -84,8 +81,6 @@ for (pool in list.files("/path/to/AN1792/SoupX/output")) {
   s$pool <- pool
   s$sample_id <- s$orig.ident
   s$sample_barcode <- row.names(s@meta.data)
-  
-  # Add to list 
   pool_list[[i]] <- s
   i <- i + 1
 }
@@ -104,7 +99,8 @@ s[["RNA"]] <- split(s[["RNA"]], f = s$sample_id)
 # Save pre-QC object
 saveRDS(s, file = paste0(output_dir, "data/s_raw.rds"))
 
-# Generate QC metric data per sample: strict min, flexible max for number of genes and UMI counts, strict MT max
+# Calculate general QC metrics per sample: strict min, flexible max for number of genes and UMI counts, strict MT max https://www.10xgenomics.com/analysis-guides/common-considerations-for-quality-control-filters-for-single-cell-rna-seq-data
+# Only min UMI and nFeature thresholds are used to define low quality cells
 thresholds <- data.frame()
 for (sample in unique(s$sample_id)) {
   
@@ -135,20 +131,13 @@ for (sample in unique(s$sample_id)) {
                                              mt_median = mt_median, mt_max = mt_max, mt_max_thresh = mt_max_thresh))
 }
 
-# Save data
-thresh_used <- thresholds[,c("sample", "pool", "umi_min", "umi_median", "umi_max", "umi_min_thresh", "nfeat_min", "nfeat_median", "nfeat_max", "nfeat_min_thresh")]
-colnames(thresh_used)[c(6, 10)] <- c("umi_min_thresh (median - 3*MAD)", "nfeat_min_thresh (median - 2*MAD)")
-write.csv(thresh_used, paste0(output_dir, "data/umi_nfeat_thresholds.csv"), row.names = FALSE)
-
-# Filter based on QC thresholds
-
 # Initialize table of QC stats 
 qc_table <- data.frame(table(s$sample_id))
 colnames(qc_table) <- c("sample", "pre_qc")
 qc_table$pool <- s$pool[match(qc_table$sample, s$sample_id)]
 qc_table <- qc_table[,c("sample", "pool", "pre_qc")]
 
-# UMI/nFeature filtering
+# Filter cells using minimum UMI and nFeature thresholds
 pre_umi <- table(s$sample_id)
 cells_keep <- c()
 for (sample in unique(s$sample_id)) {
@@ -160,13 +149,13 @@ s <- subset(s, cells = cells_keep)
 umi_removed <- data.frame(pre_umi - table(s$sample_id))
 qc_table$umi_nfeat_removed <- umi_removed$Freq
 
-# Filter for MT % < 20 
+# Filter cells using uniform MT % threshold
 pre_mt <- table(s$sample_id)
 s <- subset(s, percent.mt < 20)
 mt_removed <- data.frame(pre_mt - table(s$sample_id))
 qc_table$mt_removed <- mt_removed$Freq
 
-# Post QC cells 
+# Update QC summary table 
 post_qc <- data.frame(table(s$sample_id))
 qc_table$post_qc <- post_qc$Freq
 
