@@ -34,7 +34,7 @@ output_folder <- "/path/to/preprocessing/folder"
 threshold_file <- "/path/to/qc/metrics/file.xlsx"
 
 #-------------------------------------------------------------------------------
-# QC filtering for cohort 8 samples
+# QC filtering for Lecanemab cohort 8
 
 # Load preprocessed Seurat object
 s <- readRDS(paste0(output_folder, "/s_preprocessed.rds"))

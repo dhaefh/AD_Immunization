@@ -38,7 +38,7 @@ all_seurat_file <- glue("{prev_out_dir}/all_samples_01.rds")
 objects_out_dir <- "/path/to/objects/output/folder"
 
 #-------------------------------------------------------------------------------
-# QC filtering for cohort 1 samples
+# QC filtering for AN1792 cohort
 
 # Combine per-sample QC metric files for cohort 1 and 6
 cohort_6_metrics <- paste0(metrics_folder, "cohort_6_QC.xlsx")
@@ -66,25 +66,6 @@ colnames(pre_qc_table)[1] <- "sample_id"
 colnames(pre_qc_table)[2] <- "n_spots"
 QC_stats_out_file <- glue("{objects_out_dir}/all_sample_pre_qc_spot_count.csv")
 write.csv(pre_qc_table, QC_stats_out_file, row.names = FALSE, quote = FALSE)
-
-# Add sample-level meta data to Seurat object
-meta <- read.csv("/path/to/QC_meta_updated_11-09-2023.csv", row.names = 1)
-meta$sample_id <- str_replace_all(row.names(meta),"-", ".")
-meta$sample_id <- str_replace_all(meta$sample_id,"_", ".")
-for (sample in unique(all_seurat_s@meta.data$sample_id)) {
-  all_seurat_s@meta.data$age[all_seurat_s@meta.data$sample_id == sample] <- meta$age[meta$sample_id == sample]
-  all_seurat_s@meta.data$group.ID[all_seurat_s@meta.data$sample_id == sample] <- meta$group.ID[meta$sample_id == sample]
-  all_seurat_s@meta.data$sex[all_seurat_s@meta.data$sample_id == sample] <- meta$sex[meta$sample_id == sample]
-  all_seurat_s@meta.data$gDNA_percent[all_seurat_s@meta.data$sample_id == sample] <- meta$perc.gDNA[meta$sample_id == sample]
-  all_seurat_s@meta.data$probe_background_UMI_cnt[all_seurat_s@meta.data$sample_id == sample] <- meta$per.probe.bckgr.UMI.cnt [meta$sample_id == sample]
-}
-
-# Calculate pre-QC average nFeatures in gray/white matter for each sample
-gw_feat <- all_seurat_s@meta.data[all_seurat_s@meta.data$manual_annotation %notin% c("", "meninges"),] %>% data.frame()
-gw_feat <- gw_feat %>% group_by(sample_id) %>% summarize(avg_feat = mean(nFeature_Spatial))
-for (sample in unique(all_seurat_s@meta.data$sample_id)) {
-  all_seurat_s@meta.data$gw_avg_features[all_seurat_s@meta.data$sample_id == sample] <- gw_feat$avg_feat[gw_feat$sample_id == sample]
-}
 
 # Split merged Seurat object into sample objects, initialize list for post-QC objects
 s_list <- SplitObject(all_seurat_s, split.by = "sample_id")
@@ -171,13 +152,6 @@ write.csv(sample_qc_stats, sample_QC_stats_out_file, row.names = FALSE, quote = 
 
 # Merge post-QC sample objects
 all_seurat_s <- merge(objects_post_qc[[1]], objects_post_qc[2:length(objects_post_qc)], merge.data = TRUE)
-
-# Calculate average % mitochondrial expression in gray/white matter per sample
-gw_MT <- all_seurat_s@meta.data[all_seurat_s@meta.data$manual_annotation %notin% c("", "meninges"),] %>% data.frame()
-gw_MT <- gw_MT %>% group_by(sample_id) %>% summarize(avg_MT = mean(percent.mt))
-for (sample in unique(all_seurat_s@meta.data$sample_id)) {
-  all_seurat_s@meta.data$gw_avg_MT_percent[all_seurat_s@meta.data$sample_id == sample] <- gw_MT$avg_MT[gw_MT$sample_id == sample]
-}
 
 # Save merged object
 saveRDS(all_seurat_s, file = glue("{objects_out_dir}/all_samples_02.rds"))

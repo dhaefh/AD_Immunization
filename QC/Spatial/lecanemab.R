@@ -36,7 +36,7 @@ objects_out_dir <- "/path/to/objects/output/folder"
 QC_per_sample_metric_file <- "/path/to/qc/metrics/file.xlsx"
 
 #-------------------------------------------------------------------------------
-# QC filtering for cohort 5/7 samples
+# QC filtering for Lecanemab cohort 5/7 
 
 # Read per sample QC metric file
 QC_per_sample_metric_df <- readxl::read_xlsx(QC_per_sample_metric_file)|>as.data.frame()
