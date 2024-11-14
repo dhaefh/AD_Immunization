@@ -49,6 +49,11 @@ s <- IntegrateLayers(object = s, method = CCAIntegration, normalization.method =
 s@meta.data[,grep("harmony", colnames(s@meta.data))] <- NULL
 s$seurat_clusters <- NULL
 
+# Generate UMAPs with 20 and 30 PCs (30 PCs are ultimately used for final UMAP + clustering)
+ElbowPlot(s, ndims = 50)
+s <- RunUMAP(s, dims = 1:20, reduction = "cca", reduction.name = "ccaumap20pcs")
+s <- RunUMAP(s, dims = 1:30, reduction = "cca", reduction.name = "ccaumap30pcs")
+
 # Save object 
 saveRDS(s, "/path/to/integrated/scRNAseq/immune/object.rds")
 

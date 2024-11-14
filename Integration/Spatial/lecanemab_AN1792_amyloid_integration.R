@@ -72,6 +72,10 @@ s <- RunPCA(s, verbose = F)
 # Integrate data 
 s <- IntegrateLayers(object = s, method = HarmonyIntegration, normalization.method = 'SCT', orig.reduction = 'pca', verbose = F, new.reduction = "harmony")
 
+# Generate UMAP 
+ElbowPlot(s, ndims = 50)
+s <- RunUMAP(s, dims = 1:30, reduction = "harmony", reduction.name = "harmonyumap")
+
 # Save object
 saveRDS(s, "/path/to/integrated/all/cohorts/amyloid/object.rds")
 
