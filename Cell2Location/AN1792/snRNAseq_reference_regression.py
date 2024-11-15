@@ -143,8 +143,7 @@ plt.hist2d(
   np.log10(aver.values.flatten() + 1),
   np.log10(inf_aver.flatten() + 1),
   bins=50,
-  norm=mpl.colors.LogNorm(),
-)
+  norm=mpl.colors.LogNorm())
 
 plt.xlabel("Mean expression for every gene in every cluster")
 plt.ylabel("Estimated expression for every gene in every cluster")

@@ -54,11 +54,9 @@ mod = cell2location.models.RegressionModel.load(f"{ref_folder}", adata_ref)
 
 # Export reference signatures
 if 'means_per_cluster_mu_fg' in adata_ref.varm.keys():
-    inf_aver = adata_ref.varm['means_per_cluster_mu_fg'][[f'means_per_cluster_mu_fg_{i}'
-                                    for i in adata_ref.uns['mod']['factor_names']]].copy()
+  inf_aver = adata_ref.varm['means_per_cluster_mu_fg'][[f'means_per_cluster_mu_fg_{i}' for i in adata_ref.uns['mod']['factor_names']]].copy()
 else:
-    inf_aver = adata_ref.var[[f'means_per_cluster_mu_fg_{i}'
-                                    for i in adata_ref.uns['mod']['factor_names']]].copy()
+  inf_aver = adata_ref.var[[f'means_per_cluster_mu_fg_{i}' for i in adata_ref.uns['mod']['factor_names']]].copy()
 inf_aver.columns = adata_ref.uns['mod']['factor_names']
 inf_aver.to_csv(f"{ref_folder}/inf_aver.csv")
 
@@ -71,16 +69,13 @@ inf_aver.to_csv(f"{ref_folder}/inf_aver_genes_used.csv")
 # Set up cell2location model
 cell2location.models.Cell2location.setup_anndata(adata=adata_vis, batch_key="sample_id", continuous_covariate_keys = ["cdr_centered"])
 mod = cell2location.models.Cell2location(
-    adata_vis, cell_state_df=inf_aver,
-    N_cells_per_location=7, 
-    detection_alpha=20)
+  adata_vis, cell_state_df=inf_aver,
+  N_cells_per_location=7, 
+  detection_alpha=20)
 mod.view_anndata_setup()
 
 # Train model in batches 
-mod.train(max_epochs=1000,
-          batch_size=2500, 
-          train_size=1,
-          accelerator='gpu')
+mod.train(max_epochs=1000, batch_size=2500, train_size=1, accelerator='gpu')
 
 # Plot training curve
 mod.plot_history(0)
@@ -92,10 +87,9 @@ plt.clf()
 
 # Summarize the posterior distribution of cell type abundance (computing quantiles directly)
 adata_vis = mod.export_posterior(
-    adata_vis, use_quantiles=True,
-    add_to_obsm=["q05", "q50", "q95", "q0001"],
-    sample_kwargs={'batch_size': 2500, 'use_gpu': True}
-)
+  adata_vis, use_quantiles=True,
+  add_to_obsm=["q05", "q50", "q95", "q0001"],
+  sample_kwargs={'batch_size': 2500, 'use_gpu': True})
 
 # Save model
 mod.save(f"{output_folder}", overwrite=True)
