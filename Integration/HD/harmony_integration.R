@@ -39,6 +39,14 @@ s <- IntegrateLayers(object = s, method = HarmonyIntegration, normalization.meth
 ElbowPlot(s, ndims = 50)
 s <- RunUMAP(s, dims = 1:30, reduction.name = 'harmonyumap', reduction = 'harmony')
 
+# Log-normalize raw counts for visualization 
+orig_default_assay <- DefaultAssay(s)
+DefaultAssay(s) <- "RNA"
+s <- NormalizeData(s)
+DefaultAssay(s) <- orig_default_assay
+
 # Save object
 saveRDS(s, paste0(output_folder, "data/s_integrated.rds"))
+
+
 

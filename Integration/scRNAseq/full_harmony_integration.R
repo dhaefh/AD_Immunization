@@ -68,6 +68,12 @@ s <- RunUMAP(s, dims = 1:30, reduction = "harmony", reduction.name = "harmonyuma
 # Add column for general sample ID (merged across pools)
 s$sample_merged <- str_split_fixed(s$sample_id, "_", 2)[,1]
 
+# Log-normalize raw counts for visualization 
+orig_default_assay <- DefaultAssay(s)
+DefaultAssay(s) <- "RNA"
+s <- NormalizeData(s)
+DefaultAssay(s) <- orig_default_assay
+
 # Save integrated object
 saveRDS(s, file = paste0(output_dir, "data/s_harmony.rds"))
 
