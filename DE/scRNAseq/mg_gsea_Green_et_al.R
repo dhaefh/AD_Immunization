@@ -10,7 +10,7 @@
 # Written by: Anne Forsyth
 # Summary: Microglia state enrichment analysis with fgsea, using human microglia states from Green et al. 
 #
-#-----------------------------------------------
+#-------------------------------------------------------------------------------
 
 # Load libraries
 suppressMessages({

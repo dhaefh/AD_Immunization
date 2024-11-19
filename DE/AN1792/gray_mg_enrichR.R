@@ -10,7 +10,7 @@
 # Written by: Anne Forsyth
 # Summary: Gene set enrichment analysis of DEGs in C2L microglia-enriched gray matter with enrichR 
 #
-#-----------------------------------------------
+#-------------------------------------------------------------------------------
 
 # Load libraries
 suppressMessages({

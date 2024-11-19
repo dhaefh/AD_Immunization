@@ -10,7 +10,7 @@
 # Written by: Anne Forsyth
 # Summary: Differential expression with MAST for plaque cluster 6
 #
-#-----------------------------------------------
+#-------------------------------------------------------------------------------
 
 # Load libraries
 suppressMessages({

@@ -10,7 +10,7 @@
 # Written by: Anne Forsyth
 # Summary: Gene set enrichment analysis of microglia and macrophage DEGs with enrichR 
 #
-#-----------------------------------------------
+#-------------------------------------------------------------------------------
 
 # Load libraries
 suppressMessages({

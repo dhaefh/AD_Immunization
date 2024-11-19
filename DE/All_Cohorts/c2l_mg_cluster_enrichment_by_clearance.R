@@ -10,7 +10,7 @@
 # Written by: Anne Forsyth
 # Summary: Differential expression with MAST for C2L enriched microglia clusters in plaque niche
 #
-#-----------------------------------------------
+#-------------------------------------------------------------------------------
 
 # Load libraries
 suppressMessages({

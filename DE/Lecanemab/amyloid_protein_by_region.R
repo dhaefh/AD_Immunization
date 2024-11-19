@@ -10,7 +10,7 @@
 # Written by: Anne Forsyth
 # Summary: Differential protein expression with FindMarkers for amyloid-rich gray matter
 #
-#-----------------------------------------------
+#-------------------------------------------------------------------------------
 
 # Load libraries
 suppressMessages({

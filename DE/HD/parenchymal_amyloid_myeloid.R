@@ -10,7 +10,7 @@
 # Written by: Anne Forsyth
 # Summary: Differential expression with MAST for parenchymal amyloid associated myeloid cells
 #
-#-----------------------------------------------
+#-------------------------------------------------------------------------------
 
 # Load libraries
 suppressMessages({

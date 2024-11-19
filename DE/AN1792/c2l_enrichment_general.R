@@ -10,7 +10,7 @@
 # Written by: Anne Forsyth
 # Summary: Differential expression with DESeq2 for C2L enriched cell types
 #
-#-----------------------------------------------
+#-------------------------------------------------------------------------------
 
 # Load libraries
 suppressMessages({

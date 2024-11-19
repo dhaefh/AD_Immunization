@@ -10,7 +10,7 @@
 # Written by: Anne Forsyth
 # Summary: Gene set enrichment analysis of lecanemab LOESS clusters with enrichR 
 #
-#-----------------------------------------------
+#-------------------------------------------------------------------------------
 
 # Load libraries
 suppressMessages({

@@ -10,7 +10,7 @@
 # Written by: Anne Forsyth
 # Summary: Differential expression with MAST for amyloid-rich gray matter
 #
-#-----------------------------------------------
+#-------------------------------------------------------------------------------
 
 # Load libraries
 suppressMessages({

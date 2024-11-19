@@ -10,7 +10,7 @@
 # Written by: Anne Forsyth
 # Summary: Partial Spearman correlation between iAD microglia-associated gene expression and clinical hallmarks 
 #
-#-----------------------------------------------
+#-------------------------------------------------------------------------------
 
 # Load libraries
 suppressMessages ({
