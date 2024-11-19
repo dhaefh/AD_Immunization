@@ -11,7 +11,6 @@
 # Summary: Merge lecanemab and AN1792 data
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages ({

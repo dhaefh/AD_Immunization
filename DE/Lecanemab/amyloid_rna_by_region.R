@@ -11,7 +11,6 @@
 # Summary: Differential expression with MAST for amyloid-rich gray matter
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

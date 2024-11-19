@@ -11,7 +11,6 @@
 # Summary: Remove doublets and create post-QC Seurat object
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

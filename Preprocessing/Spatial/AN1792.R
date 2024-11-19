@@ -11,7 +11,6 @@
 # Summary: Preprocess Space Ranger output with Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({
@@ -30,7 +29,6 @@ output_folder <- "/path/to/preprocessing/folder"
 # Initialize list for sample objects
 seurat_objects <- list()
 
-#-------------------------------------------------------------------------------
 # Preprocess cohort 1 samples
 
 # Define paths to sample-level Space Ranger output 
@@ -77,7 +75,6 @@ for (cur_sample in all_samples) {
   
 }
 
-#-------------------------------------------------------------------------------
 # Preprocess cohort 6 samples
 
 # Define paths to sample-level Space Ranger output 
@@ -122,10 +119,7 @@ for (cur_sample in all_samples) {
   i <- i + 1
 }
 
-#-------------------------------------------------------------------------------
 # Merge cohort 1 and cohort 6 samples
-
-# Merge all samples
 all_samples_seurat <- merge(seurat_objects[[1]], seurat_objects[2:length(seurat_objects)], project = "cohort_1_all", merge.data = TRUE)
 
 # Save merged Seurat object

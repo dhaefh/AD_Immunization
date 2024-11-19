@@ -11,7 +11,6 @@
 # Summary: Gene set enrichment analysis of iAD LOESS clusters with enrichR 
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

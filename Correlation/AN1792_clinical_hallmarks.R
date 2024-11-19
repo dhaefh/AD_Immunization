@@ -11,7 +11,6 @@
 # Summary: Partial Spearman correlation between iAD microglia-associated gene expression and clinical hallmarks 
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages ({

@@ -11,7 +11,6 @@
 # Summary: Infer scRNAseq cell-cell communication within AN1792, lecanemab, and nAD using CellChat
 #
 #-------------------------------------------------------------------------------
-# Initialization 
 
 # Load libraries
 suppressMessages({

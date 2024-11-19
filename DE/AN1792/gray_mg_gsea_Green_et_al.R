@@ -11,7 +11,6 @@
 # Summary: Microglia state enrichment analysis of C2L microglia-enriched gray matter with fgsea, using human microglia states from Green et al. 
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

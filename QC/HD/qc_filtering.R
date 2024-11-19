@@ -11,7 +11,6 @@
 # Summary: QC filtering with Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

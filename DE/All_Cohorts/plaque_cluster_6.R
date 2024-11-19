@@ -11,7 +11,6 @@
 # Summary: Differential expression with MAST for plaque cluster 6
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

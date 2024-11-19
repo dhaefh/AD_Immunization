@@ -11,7 +11,6 @@
 # Summary: QC filtering with Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages ({
@@ -34,9 +33,6 @@ prev_out_dir <- "/path/to/preprocessing/folder"
 all_seurat_file <- glue("{prev_out_dir}/all_samples_01_rna.rds")
 objects_out_dir <- "/path/to/objects/output/folder"
 QC_per_sample_metric_file <- "/path/to/qc/metrics/file.xlsx"
-
-#-------------------------------------------------------------------------------
-# QC filtering for Lecanemab cohort 5/7 
 
 # Read per sample QC metric file
 QC_per_sample_metric_df <- readxl::read_xlsx(QC_per_sample_metric_file)|>as.data.frame()

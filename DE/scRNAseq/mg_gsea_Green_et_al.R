@@ -11,7 +11,6 @@
 # Summary: Microglia state enrichment analysis with fgsea, using human microglia states from Green et al. 
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

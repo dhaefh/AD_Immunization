@@ -11,7 +11,6 @@
 # Summary: Doublet detection with DoubletFinder
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

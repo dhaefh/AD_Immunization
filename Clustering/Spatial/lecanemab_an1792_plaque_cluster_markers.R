@@ -11,7 +11,6 @@
 # Summary: Identify markers for lecanemab and AN1792 Aß clusters
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

@@ -11,7 +11,6 @@
 # Summary: Compare average QC metrics per donor per brain region for lecanemab vs. nAD using Wilcoxon test
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages ({

@@ -11,7 +11,6 @@
 # Summary: Perform hierarchical clustering on lecanemab LOESS trajectories  
 #
 #-------------------------------------------------------------------------------
-# Initialization 
 
 # Load libraries
 suppressMessages({

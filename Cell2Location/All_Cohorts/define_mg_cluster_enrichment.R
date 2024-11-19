@@ -11,7 +11,6 @@
 # Summary: Define microglia cluster enrichment using Cell2Location predicted abundance
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages ({

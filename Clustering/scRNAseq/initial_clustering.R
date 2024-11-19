@@ -11,7 +11,6 @@
 # Summary: Initial clustering of scRNAseq data in Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

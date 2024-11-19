@@ -8,10 +8,9 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Remove background contamination from scRNAseq data with SoupX 
+# Summary: Remove background contamination with SoupX 
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

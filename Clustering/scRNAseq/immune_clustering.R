@@ -11,7 +11,6 @@
 # Summary: Clustering of scRNAseq immune cells in Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

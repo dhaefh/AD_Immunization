@@ -11,7 +11,6 @@
 # Summary: QC filtering with Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages ({
@@ -32,9 +31,6 @@ output_folder <- "/path/to/preprocessing/folder"
 
 # Define path to QC threshold file
 threshold_file <- "/path/to/qc/metrics/file.xlsx"
-
-#-------------------------------------------------------------------------------
-# QC filtering for Lecanemab cohort 8
 
 # Load preprocessed Seurat object
 s <- readRDS(paste0(output_folder, "/s_preprocessed.rds"))

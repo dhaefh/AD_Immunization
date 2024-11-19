@@ -11,7 +11,6 @@
 # Summary: Generate LOESS predictions for nAD gene expression based on amyloid density in the plaque niche, for genes in lecanemab cluster 3
 #
 #-------------------------------------------------------------------------------
-# Initialization 
 
 # Load libraries
 suppressMessages({

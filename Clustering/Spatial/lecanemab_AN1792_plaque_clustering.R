@@ -11,7 +11,6 @@
 # Summary: Clustering of lecanemab and AN1792 amyloid-rich spots in gray matter
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages ({

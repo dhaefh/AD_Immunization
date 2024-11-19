@@ -11,7 +11,6 @@
 # Summary: Gene set enrichment analysis of microglia and macrophage DEGs with enrichR 
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

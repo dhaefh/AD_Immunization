@@ -11,7 +11,6 @@
 # Summary: Pre-DoubletFinder QC filtering with Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

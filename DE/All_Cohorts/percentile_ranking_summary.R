@@ -11,7 +11,6 @@
 # Summary: Summarize amyloid and microglia associated genes for AN1792 and Lecanemab based on ranking within DE analyses
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

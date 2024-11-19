@@ -11,7 +11,6 @@
 # Summary: Differential expression with DESeq2 for C2L enriched cell types
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

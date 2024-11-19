@@ -11,7 +11,6 @@
 # Summary: Merge all lecanemab data and perform final QC filtering based on manual layer and protein expression 
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages ({

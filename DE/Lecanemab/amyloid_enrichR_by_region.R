@@ -11,7 +11,6 @@
 # Summary: Gene set enrichment analysis of DEGs in amyloid-rich gray matter with enrichR 
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

@@ -11,7 +11,6 @@
 # Summary: Run SCTransform and perform CCA integration in Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages ({

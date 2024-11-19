@@ -11,7 +11,6 @@
 # Summary: Generate LOESS predictions for lecanemab gene expression based on amyloid density in the plaque niche
 #
 #-------------------------------------------------------------------------------
-# Initialization 
 
 # Load libraries
 suppressMessages({

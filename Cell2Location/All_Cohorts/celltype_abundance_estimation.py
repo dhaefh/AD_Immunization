@@ -11,7 +11,6 @@
 # Summary: Estimate cell type abundance with Cell2Location
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 import scanpy as sc

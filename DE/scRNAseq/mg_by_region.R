@@ -11,7 +11,6 @@
 # Summary: Differential expression with MAST for microglia 
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

@@ -11,7 +11,6 @@
 # Summary: Preprocess Space Ranger output with Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization 
 
 # Load libraries
 suppressMessages({
@@ -32,9 +31,6 @@ all_samples <- list.dirs(input_folder, recursive = FALSE)
 
 # Initialize list for sample objects
 seurat_objects <- list()
-
-#-------------------------------------------------------------------------------
-# Preprocess cohort 8 samples
 
 # Initialize Seurat objects for each sample
 i <- 1

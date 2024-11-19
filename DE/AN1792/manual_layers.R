@@ -11,7 +11,6 @@
 # Summary: Differential expression with DESeq2 for manual layers
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

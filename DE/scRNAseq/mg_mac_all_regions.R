@@ -11,7 +11,6 @@
 # Summary: Differential expression with MAST for microglia and macrophages
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

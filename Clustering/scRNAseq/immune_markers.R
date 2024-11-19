@@ -11,7 +11,6 @@
 # Summary: Identify markers for scRNAseq immune clusters in Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

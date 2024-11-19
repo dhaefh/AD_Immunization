@@ -11,7 +11,6 @@
 # Summary: Perform hierarchical clustering on iAD LOESS trajectories  
 #
 #-------------------------------------------------------------------------------
-# Initialization 
 
 # Load libraries
 suppressMessages({

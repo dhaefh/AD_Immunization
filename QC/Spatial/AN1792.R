@@ -11,7 +11,6 @@
 # Summary: QC filtering with Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages ({
@@ -36,9 +35,6 @@ metrics_folder <- "/path/to/QC/metrics/"
 prev_out_dir <- "/path/to/preprocessing/folder"
 all_seurat_file <- glue("{prev_out_dir}/all_samples_01.rds")
 objects_out_dir <- "/path/to/objects/output/folder"
-
-#-------------------------------------------------------------------------------
-# QC filtering for AN1792 cohort
 
 # Combine per-sample QC metric files for cohort 1 and 6
 cohort_6_metrics <- paste0(metrics_folder, "cohort_6_QC.xlsx")

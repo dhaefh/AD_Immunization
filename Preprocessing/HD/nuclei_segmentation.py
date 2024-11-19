@@ -11,7 +11,6 @@
 # Summary: Nuclei segmentation with StarDist
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 import pandas as pd

@@ -11,7 +11,6 @@
 # Summary: Cluster Visium HD data and find cluster markers in Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

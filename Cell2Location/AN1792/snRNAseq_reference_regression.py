@@ -11,7 +11,6 @@
 # Summary: Estimate snRNAseq cell type signatures with Cell2Location
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 import scanpy as sc

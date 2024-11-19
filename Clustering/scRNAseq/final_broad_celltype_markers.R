@@ -11,7 +11,6 @@
 # Summary: Identify markers for final scRNAseq broad cell types in Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

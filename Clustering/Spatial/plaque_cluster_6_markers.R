@@ -11,7 +11,6 @@
 # Summary: Identify positive and negative markers for Aß cluster 6
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

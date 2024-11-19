@@ -11,7 +11,6 @@
 # Summary: Identify markers for initial scRNAseq clusters in Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

@@ -11,7 +11,6 @@
 # Summary: Map Space Ranger output to segmented nuclei and generate plots to evaluate segmentation
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 import pandas as pd

@@ -11,7 +11,6 @@
 # Summary: Differential expression with MAST for C2L enriched microglia clusters in plaque niche
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

@@ -11,7 +11,6 @@
 # Summary: Differential expression with MAST for parenchymal amyloid associated myeloid cells
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

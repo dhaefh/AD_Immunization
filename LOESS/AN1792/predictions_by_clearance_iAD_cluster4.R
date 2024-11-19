@@ -11,7 +11,6 @@
 # Summary: Generate LOESS predictions for iAD-Ext and iAD-Lim gene expression based on amyloid density in the plaque niche, for genes in iAD cluster 4
 #
 #-------------------------------------------------------------------------------
-# Initialization 
 
 # Load libraries
 suppressMessages({

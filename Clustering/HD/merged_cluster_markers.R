@@ -11,7 +11,6 @@
 # Summary: Identify markers for merged Visium HD clusters in Seurat
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

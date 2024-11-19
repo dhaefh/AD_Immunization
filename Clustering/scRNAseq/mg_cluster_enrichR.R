@@ -11,7 +11,6 @@
 # Summary: Identify positive and negative markers for microglia clusters and perform gene set enrichment analysis with enrichR 
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

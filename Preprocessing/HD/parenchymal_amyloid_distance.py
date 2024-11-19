@@ -11,7 +11,6 @@
 # Summary: Calculate distance to nearest parenchymal amyloid for each nucleus
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 import pandas as pd

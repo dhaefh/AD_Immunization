@@ -11,7 +11,6 @@
 # Summary: Identify hippocampal nuclei
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 import pandas as pd

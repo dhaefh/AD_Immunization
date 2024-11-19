@@ -11,7 +11,6 @@
 # Summary: Differential protein expression with FindMarkers for amyloid-rich gray matter
 #
 #-----------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({

@@ -11,7 +11,6 @@
 # Summary: Create Seurat objects using binned expression
 #
 #-------------------------------------------------------------------------------
-# Initialization
 
 # Load libraries
 suppressMessages({
