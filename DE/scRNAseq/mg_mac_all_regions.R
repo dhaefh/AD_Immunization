@@ -37,7 +37,7 @@ s <- subset(s, cells = rownames(immune@meta.data))
 immune <- NULL
 gc()
 
-# Create group variable
+# Define group variable
 s@meta.data$group_de <- NA
 s$group_de[grep("^102", s$sample_merged)] <- "AN1792"
 s$group_de[grep("\\.B", s$sample_merged)] <- "LCMB"
@@ -88,8 +88,10 @@ for (type in unique(s$cell_type_de)) {
       old_caa <- c(old_caa, cells)
       new_caa <- c(new_caa, rownames(meta)[meta$caa_merged == paste0(region, "_new")])
     } else {
-      total_pool <- sum(meta$caa_merged %in% c(paste0(region, "_new"), paste0("NMA22.300.", region))) # Full CAA pool for current cell type in current region
-      caa_summary <- meta[meta$caa_merged == paste0(region, "_new"),] %>% group_by(sample_merged) %>% summarize(count = n()) # Cells per new donor
+      
+      # Calculate cells per new CAA donor
+      total_pool <- sum(meta$caa_merged %in% c(paste0(region, "_new"), paste0("NMA22.300.", region)))
+      caa_summary <- meta[meta$caa_merged == paste0(region, "_new"),] %>% group_by(sample_merged) %>% summarize(count = n()) 
       
       # Take ceiling if downsampling to be conservative
       if (max(caa_summary$count) <= round(ceiling(total_pool/2))) {
@@ -97,7 +99,7 @@ for (type in unique(s$cell_type_de)) {
         old_caa <- c(old_caa, rownames(meta)[meta$caa_merged == paste0("NMA22.300.", region)])
       } else {
         sample <- caa_summary$sample_merged[caa_summary$count > round(ceiling(total_pool/2))]
-        n_cells <- sum(meta$caa_merged == paste0("NMA22.300.", region) | (meta$caa_merged == paste0(region, "_new") & meta$sample_merged != sample)) # Calculate remaining cells in the CAA pool
+        n_cells <- sum(meta$caa_merged == paste0("NMA22.300.", region) | (meta$caa_merged == paste0(region, "_new") & meta$sample_merged != sample)) 
         set.seed(100)
         cells <- sample(rownames(meta)[meta$sample_merged == sample], n_cells, replace = FALSE)
         new_caa <- c(new_caa, rownames(meta)[rownames(meta) %in% cells | (meta$caa_merged == paste0(region, "_new") & meta$sample_merged != sample)])
@@ -219,8 +221,6 @@ for (type in unique(s$cell_type_de)) {
       
       # If fold difference > 3 and CAA is the larger group, downsample CAA to 3x LCMB
       if (fold > 3 & max_group == "CAA") {
-        
-        # Set target number of cells for CAA (LCMB*3)
         target <- min*3
         
         # Adjust if greater than 3000
@@ -307,10 +307,10 @@ for (type in unique(s$cell_type_de)) {
         }
         set.seed(100)
         cells_keep <- sample(rownames(meta)[meta$sample_merged == paste0("NMA22.205.B", region)], target, replace = FALSE)
-        cells_keep <- rownames(meta)[rownames(meta) %in% cells_keep | meta$caa_merged_total == paste0("A", region)] # Keep all CAA cells + downsampled LCMB
+        cells_keep <- rownames(meta)[rownames(meta) %in% cells_keep | meta$caa_merged_total == paste0("A", region)] 
       } 
       
-      # If fold difference <= 3 but larger group has more than 3000 cells, downsample larger group 
+      # Downsample CAA if fold difference <= 3 but CAA has > 3000 cells
       else if (sum(meta$caa_merged_total == paste0("A", region)) > 3000) {
         target <- 3000
         
@@ -383,14 +383,16 @@ for (type in unique(s$cell_type_de)) {
         # Keep all LCMB + downsampled CAA 
         cells_keep <- rownames(meta)[rownames(meta) %in% cells_keep | meta$sample_merged == paste0("NMA22.205.B", region)]
       }
+      
+      # Downsample LCMB if fold difference <= 3 but LCMB has > 3000 cells
       else if (sum(meta$sample_merged == paste0("NMA22.205.B", region)) > 3000) {
         target <- 3000
         set.seed(100)
         cells_keep <- sample(rownames(meta)[meta$sample_merged == paste0("NMA22.205.B", region)], target, replace = FALSE)
-        cells_keep <- rownames(meta)[rownames(meta) %in% cells_keep | meta$caa_merged_total == paste0("A", region)] # Keep all CAA cells + downsampled LCMB
+        cells_keep <- rownames(meta)[rownames(meta) %in% cells_keep | meta$caa_merged_total == paste0("A", region)] 
         
-      } else { # Otherwise keep all cells
-        cells_keep <- rownames(meta)[meta$caa_merged_total == paste0("A", region) | meta$sample_merged == paste0("NMA22.205.B", region)] # Keep all cells
+      } else { 
+        cells_keep <- rownames(meta)[meta$caa_merged_total == paste0("A", region) | meta$sample_merged == paste0("NMA22.205.B", region)] 
       }
     }
     total_cells_keep <- c(total_cells_keep, cells_keep)
