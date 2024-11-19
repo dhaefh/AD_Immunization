@@ -60,7 +60,7 @@ target <- 3000
 # Calculate z value 
 z <- sum(s$condition == "iAD") - target
 
-# Calculate target cells per donor
+# Calculate target spots per donor
 target_per_donor <- round(target/length(unique(meta$sample_id[meta$condition == "iAD"])))
 
 # Calculate deviation from target per donor
@@ -73,7 +73,7 @@ summary <- summary %>% dplyr::arrange(desc(deviation))
 # Filter for donors with positive deviation
 positive_summary <- summary[summary$deviation > 0,]
 
-# Downsample all but one positive donor 
+# Downsample to the minimum positive deviation, then downsample equally
 positive_summary$n_sample <- positive_summary$count[positive_summary$deviation == min(positive_summary$deviation)]
 remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) 
 if (remaining_z > 0) {
@@ -95,6 +95,8 @@ for (sample in unique(meta$sample_id[meta$condition == "iAD"])) {
   }
   cells_keep <- c(cells_keep, cells)
 }
+
+# Update list of downsampled spots
 total_cells_keep <- c(total_cells_keep, cells_keep)
 
 # nAD
@@ -102,7 +104,7 @@ total_cells_keep <- c(total_cells_keep, cells_keep)
 # Calculate z value 
 z <- sum(s$condition == "nAD") - target
 
-# Calculate target cells per donor
+# Calculate target spots per donor
 target_per_donor <- round(target/length(unique(meta$sample_id[meta$condition == "nAD"])))
 
 # Calculate deviation from target per donor
@@ -115,7 +117,7 @@ summary <- summary %>% dplyr::arrange(desc(deviation))
 # Filter for donors with positive deviation
 positive_summary <- summary[summary$deviation > 0,]
 
-# Downsample all but one positive donor 
+# Downsample to the minimum positive deviation, then downsample equally
 positive_summary$n_sample <- positive_summary$count[positive_summary$deviation == min(positive_summary$deviation)]
 remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) 
 if (remaining_z > 0) {
@@ -137,6 +139,8 @@ for (sample in unique(meta$sample_id[meta$condition == "nAD"])) {
   }
   cells_keep <- c(cells_keep, cells)
 }
+
+# Update list of downsampled spots
 total_cells_keep <- c(total_cells_keep, cells_keep)
 
 # Generate table of pre-downsampling spots per sample

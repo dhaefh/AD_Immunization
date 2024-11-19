@@ -50,7 +50,7 @@ samples_keep <- as.character(summary$Var1[summary$Freq >= 2])
 s <- subset(s, sample_id %in% samples_keep)
 gc()
 
-# Downsample spots with highest amyloid density such that no sample makes up more than 50% of a group, fold difference < 3 between groups, no more than 3000 spots per group
+# Downsample spots with highest amyloid density such that no sample makes up more than 50% of a group, fold difference < 3 between groups, and there are no more than 3000 spots per group
 n_cells <- readxl::read_xlsx("/path/to/custom/downsampling/cells/per/donor.xlsx")
 colnames(n_cells)[3] <- "downsampled"
 cells_keep <- c()

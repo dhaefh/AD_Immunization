@@ -71,7 +71,7 @@ gc()
 p_thresh <- 0.05
 fc_thresh <- log2(1.5) 
 
-# Randomly downsample spots enriched for microglia clusters 2 and 4 such that no sample makes up more than 50% of iAD-Ext and DE groups have less than 3 fold difference
+# Downsample spots enriched for microglia clusters 2 and 4 such that no sample makes up more than 50% of iAD-Ext and DE groups have less than 3 fold difference
 
 # Mg-2 
 df <- s@meta.data[s$Mg.2_enriched == 1 & s$condition %in% c("iAD", "nAD"),]
@@ -82,7 +82,7 @@ df <- s@meta.data[s$Mg.2_enriched == 1 & s$condition %in% c("iAD", "nAD"),]
 target <- 3*sum(df$condition_clearance == "ext")
 z <- sum(df$condition == "nAD") - target
 
-# Calculate target cells per donor
+# Calculate target spots per donor
 target_per_donor <- round(target/length(unique(df$sample_id[df$condition == "nAD"])))
 
 # Calculate deviation from target per donor
@@ -95,14 +95,14 @@ summary <- summary %>% dplyr::arrange(desc(deviation))
 # Filter for donors with positive deviation
 positive_summary <- summary[summary$deviation > 0,]
 
-# Downsample all but one positive donor, then downsample equally
+# Downsample to the minimum positive deviation, then downsample equally
 positive_summary$n_sample <- positive_summary$count[positive_summary$deviation == min(positive_summary$deviation)]
 remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) 
 if (remaining_z > 0) {
   positive_summary$n_sample <- positive_summary$n_sample - round(remaining_z/nrow(positive_summary))
 }
 
-# Downsample the positive donors, keep all cells for the others
+# Downsample spots 
 cells_keep <- c()
 for (sample in unique(df$sample_id[df$condition == "nAD"])) {
   if (sample %in% positive_summary$sample_id) {
@@ -143,7 +143,7 @@ df <- df[df$sample_id != "AN1792.102.6" | rownames(df) %in% ext_keep,]
 target <- 3*sum(df$condition_clearance == "ext")
 z <- sum(df$condition == "nAD") - target
 
-# Calculate target cells per donor
+# Calculate target spots per donor
 target_per_donor <- round(target/length(unique(df$sample_id[df$condition == "nAD"])))
 
 # Calculate deviation from target per donor
@@ -156,14 +156,14 @@ summary <- summary %>% dplyr::arrange(desc(deviation))
 # Filter for donors with positive deviation
 positive_summary <- summary[summary$deviation > 0,]
 
-# Downsample all but one positive donor 
+# Downsample to the minimum positive deviation, then downsample equally
 positive_summary$n_sample <- positive_summary$count[positive_summary$deviation == min(positive_summary$deviation)]
 remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) 
 if (remaining_z > 0) {
   positive_summary$n_sample <- positive_summary$n_sample - round(remaining_z/nrow(positive_summary))
 }
 
-# Downsample the positive donors, keep all cells for the others
+# Downsample spots
 cells_keep <- c()
 for (sample in unique(df$sample_id[df$condition == "nAD"])) {
   if (sample %in% positive_summary$sample_id) {

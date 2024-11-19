@@ -56,7 +56,7 @@ old_caa <- c()
 new_caa <- c()
 for (region in c(1, 3, 4, 9)) {
   
-  # If old CAA donor has more spots, downsample to total new controls, otherwise ensure no new donors not make up more than 50% of the total CAA pool
+  # If old CAA donor has more spots, downsample to total new controls, otherwise ensure no new donors make up more than 50% of the total CAA pool
   if (sum(meta$caa_merged == paste0("NMA22.A", region)) > sum(meta$caa_merged == paste0("A", region, "_new"))) {
     cur_meta <- meta[meta$caa_merged == paste0("NMA22.A", region),]
     cur_meta <- cur_meta %>% dplyr::arrange(desc(cortical_amyloid))
@@ -102,7 +102,7 @@ meta$caa_merged_total[grep("A9", meta$caa_merged_total)] <- "A9"
 total_cells_keep <- c()
 for (region in c(1, 3, 4, 9)) {
   
-  # Identify group with more spots
+  # Identify larger group
   if (sum(meta$caa_merged_total == paste0("A", region)) > sum(meta$sample_id == paste0("NMA22.B", region))) {
     max_group <- "CAA"
     max <- sum(meta$caa_merged_total == paste0("A", region))

@@ -79,7 +79,7 @@ for (type in unique(s$cell_type_de)) {
       next
     }
     
-    # If old CAA donor has more cells, downsample to total new controls, otherwise ensure no new donors not make up more than 50% of the total CAA pool
+    # If old CAA donor has more cells, downsample to total new controls, otherwise ensure no new donors make up more than 50% of the total CAA pool
     if (sum(meta$caa_merged == paste0("NMA22.300.", region)) > sum(meta$caa_merged == paste0(region, "_new"))) {
       set.seed(100)
       cells <- sample(rownames(meta)[meta$caa_merged == paste0("NMA22.300.", region)], sum(meta$caa_merged == paste0(region, "_new")), replace = FALSE)
@@ -203,7 +203,7 @@ for (type in unique(s$cell_type_de)) {
       cells_keep <- c(cells_keep, cells)
     } else {
       
-      # Identify group with more cells
+      # Identify larger group
       if (sum(meta$caa_merged_total == paste0("A", region)) > sum(meta$sample_merged == paste0("NMA22.205.B", region))) {
         max_group <- "CAA"
         max <- sum(meta$caa_merged_total == paste0("A", region))

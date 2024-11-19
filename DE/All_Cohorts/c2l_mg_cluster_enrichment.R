@@ -136,17 +136,17 @@ s$caa_merged[s$caa_merged %in% c("A11.170.9", "A14.193.9")] <- "A9_new"
 full_meta <- s@meta.data[s$condition %in% c("LCMB", "CAA"),]
 print(unique(full_meta[,c("sample_id", "caa_merged")]))
 
-# Randomly downsample LCMB and CAA spots enriched for microglia clusters 2 and 4
+# Downsample LCMB and CAA spots enriched for microglia clusters 2 and 4
 
 # Mg-2
 mg2 <- full_meta[full_meta$Mg.2_enriched == 1,]
 
-# Ensure no CAA donor makes up more than 50% of the CAA group
+# Ensure no CAA donor makes up more than 50% of the CAA group within each region
 old_caa <- c()
 new_caa <- c()
 for (region in c(1, 3, 4, 9)) {
   
-  # If old CAA donor has more cells, downsample to total new controls; if new donors combined have more cells, ensure one donor does not make up more than 50% of the pool
+  # If old CAA donor has more spots, downsample to total new controls, otherwise ensure no new donors make up more than 50% of the total CAA pool
   if (sum(mg2$caa_merged == paste0("NMA22.A", region)) > sum(mg2$caa_merged == paste0("A", region, "_new"))) {
     cur_meta <- mg2[mg2$caa_merged == paste0("NMA22.A", region),]
     cur_downsample <- sum(mg2$caa_merged == paste0("A", region, "_new"))
@@ -155,17 +155,18 @@ for (region in c(1, 3, 4, 9)) {
     old_caa <- c(old_caa, cells)
     new_caa <- c(new_caa, rownames(mg2)[mg2$caa_merged == paste0("A", region, "_new")])
   } else {
-    total_pool <- sum(mg2$caa_merged %in% c(paste0("A", region, "_new"), paste0("NMA22.A", region))) # Full CAA pool for current cell type in current region
-    caa_summary <- mg2[mg2$caa_merged == paste0("A", region, "_new"),] %>% group_by(sample_id) %>% summarize(count = n()) # Cells per new donor
     
-    # If no donors make up more than 50% of the entire CAA pool, keep all cells (take ceiling to avoid downsampling border cases)
+    # Calculate spots per new CAA donor
+    total_pool <- sum(mg2$caa_merged %in% c(paste0("A", region, "_new"), paste0("NMA22.A", region))) 
+    caa_summary <- mg2[mg2$caa_merged == paste0("A", region, "_new"),] %>% group_by(sample_id) %>% summarize(count = n()) 
+    
+    # Take ceiling if downsampling to be conservative
     if (max(caa_summary$count) <= round(ceiling(total_pool/2))) {
       new_caa <- c(new_caa, rownames(mg2)[mg2$caa_merged == paste0("A", region, "_new")])
       old_caa <- c(old_caa, rownames(mg2)[mg2$caa_merged == paste0("NMA22.A", region)])
     } else {
-      # There can only be one sample that makes up more than 50% of the entire CAA pool 
       sample <- caa_summary$sample_id[caa_summary$count > round(ceiling(total_pool/2))]
-      n_cells <- sum(mg2$caa_merged == paste0("NMA22.A", region) | (mg2$caa_merged == paste0("A", region, "_new") & mg2$sample_id != sample)) # Calculate remaining cells in the CAA pool
+      n_cells <- sum(mg2$caa_merged == paste0("NMA22.A", region) | (mg2$caa_merged == paste0("A", region, "_new") & mg2$sample_id != sample)) # Calculate remaining spots in the CAA pool
       
       cur_meta <- mg2[mg2$sample_id == sample,]
       set.seed(100)
@@ -177,10 +178,10 @@ for (region in c(1, 3, 4, 9)) {
   }
 }
 
-# Subset for downsampled controls - keep all LCMB cells in all regions 
+# Filter for downsampled controls  
 mg2_downsampled <- mg2[rownames(mg2) %in% c(old_caa, new_caa) | str_detect(mg2$sample_id, "B"),]
 
-# Create variable for total CAA per region
+# Define variable for total CAA per region
 mg2_downsampled$caa_merged_total <- mg2_downsampled$caa_merged
 mg2_downsampled$caa_merged_total[grep("A1", mg2_downsampled$caa_merged_total)] <- "A1"
 mg2_downsampled$caa_merged_total[grep("A3", mg2_downsampled$caa_merged_total)] <- "A3"
@@ -188,11 +189,11 @@ mg2_downsampled$caa_merged_total[grep("A4", mg2_downsampled$caa_merged_total)] <
 mg2_downsampled$caa_merged_total[grep("A9", mg2_downsampled$caa_merged_total)] <- "A9"
 print(unique(mg2_downsampled[,c("sample_id", "caa_merged", "caa_merged_total")]))
 
-# Ensure fold difference < 3 between groups and each group has no more than 3000 spots (within each brain region)
+# Within each region, ensure fold difference < 3 between groups and each group has no more than 3000 spots
 total_cells_keep <- c()
 for (region in c(1, 3, 4, 9)) {
   
-  # Identify group with max cells in region
+  # Identify larger group
   if (sum(mg2_downsampled$caa_merged_total == paste0("A", region)) > sum(mg2_downsampled$sample_id == paste0("NMA22.B", region))) {
     max_group <- "CAA"
     max <- sum(mg2_downsampled$caa_merged_total == paste0("A", region))
@@ -206,10 +207,8 @@ for (region in c(1, 3, 4, 9)) {
   # Calculate fold difference
   fold <- max/min
   
-  # If fold difference is greater than 3 and CAA has more cells, downsample to adjusted target max
+  # If fold difference > 3 and CAA is the larger group, downsample CAA to 3x LCMB
   if (fold > 3 & max_group == "CAA") {
-    
-    # Set target number of cells for CAA (LCMB*3)
     target <- min*3
     
     # Adjust if greater than 3000
@@ -220,7 +219,7 @@ for (region in c(1, 3, 4, 9)) {
     # Calculate z value 
     z <- max - target
     
-    # Calculate target cells per donor
+    # Calculate target spots per donor
     target_per_donor <- round(target/length(unique(mg2_downsampled$sample_id[mg2_downsampled$caa_merged_total == paste0("A", region)])))
     
     # Calculate deviation from target per donor
@@ -244,7 +243,7 @@ for (region in c(1, 3, 4, 9)) {
       positive_summary$n_sample <- positive_summary$count[positive_summary$deviation == min(positive_summary$deviation)]
       
       # If possible, downsample positive donors equally using remaining z
-      remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) # Subtract cells removed in previous step from total z
+      remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) # Subtract spots removed in previous step from total z
       if (remaining_z > 0) {
         positive_summary$n_sample <- positive_summary$n_sample - round(remaining_z/nrow(positive_summary))
       }
@@ -271,7 +270,7 @@ for (region in c(1, 3, 4, 9)) {
       print("Case not covered")
     }
     
-    # Downsample the positive donors, keep all cells for the others
+    # Downsample the positive donors, keep all spots for the others
     cells_keep <- c()
     for (sample in unique(mg2_downsampled$sample_id[mg2_downsampled$caa_merged_total == paste0("A", region)])) {
       if (sample %in% positive_summary$sample_id) {
@@ -290,7 +289,7 @@ for (region in c(1, 3, 4, 9)) {
     # Keep all LCMB + downsampled CAA 
     cells_keep <- rownames(mg2_downsampled)[rownames(mg2_downsampled) %in% cells_keep | mg2_downsampled$sample_id == paste0("NMA22.B", region)]
   }
-  # If fold difference is greater than 3 and LCMB has more cells, downsample to adjusted target max
+  # If fold difference > 3 and LCMB is the larger group, downsample LCMB to 3x CAA
   else if (fold > 3 & max_group == "LCMB") { 
     target <- min*3
     
@@ -301,9 +300,9 @@ for (region in c(1, 3, 4, 9)) {
     cur_meta <- mg2_downsampled[mg2_downsampled$sample_id == paste0("NMA22.B", region),]
     set.seed(100)
     cells_keep <- sample(rownames(cur_meta), target, replace = FALSE)
-    cells_keep <- rownames(mg2_downsampled)[rownames(mg2_downsampled) %in% cells_keep | mg2_downsampled$caa_merged_total == paste0("A", region)] # Keep all CAA cells + downsampled LCMB
+    cells_keep <- rownames(mg2_downsampled)[rownames(mg2_downsampled) %in% cells_keep | mg2_downsampled$caa_merged_total == paste0("A", region)] 
   } else { # Otherwise keep all cells
-    cells_keep <- rownames(mg2_downsampled)[mg2_downsampled$caa_merged_total == paste0("A", region) | mg2_downsampled$sample_id == paste0("NMA22.B", region)] # Keep all cells
+    cells_keep <- rownames(mg2_downsampled)[mg2_downsampled$caa_merged_total == paste0("A", region) | mg2_downsampled$sample_id == paste0("NMA22.B", region)] 
   }
   total_cells_keep <- c(total_cells_keep, cells_keep)
 }
@@ -334,12 +333,12 @@ summary <- data.frame(table(mg4$sample_id))
 samples_keep <- as.character(summary$Var1[summary$Freq >= 2])
 mg4 <- mg4[mg4$sample_id %in% samples_keep,]
 
-# Ensure no CAA donor makes up more than 50% of the CAA group
+# Ensure no CAA donor makes up more than 50% of the CAA group within each region
 old_caa <- c()
 new_caa <- c()
 for (region in c(1, 3, 4, 9)) {
   
-  # If old CAA donor has more cells, downsample to total new controls; if new donors combined have more cells, ensure one donor does not make up more than 50% of the pool
+  # If old CAA donor has more spots, downsample to total new controls, otherwise ensure no new donors make up more than 50% of the total CAA pool
   if (sum(mg4$caa_merged == paste0("NMA22.A", region)) > sum(mg4$caa_merged == paste0("A", region, "_new"))) {
     cur_meta <- mg4[mg4$caa_merged == paste0("NMA22.A", region),]
     cur_downsample <- sum(mg4$caa_merged == paste0("A", region, "_new"))
@@ -348,17 +347,18 @@ for (region in c(1, 3, 4, 9)) {
     old_caa <- c(old_caa, cells)
     new_caa <- c(new_caa, rownames(mg4)[mg4$caa_merged == paste0("A", region, "_new")])
   } else {
-    total_pool <- sum(mg4$caa_merged %in% c(paste0("A", region, "_new"), paste0("NMA22.A", region))) # Full CAA pool for current cell type in current region
-    caa_summary <- mg4[mg4$caa_merged == paste0("A", region, "_new"),] %>% group_by(sample_id) %>% summarize(count = n()) # Cells per new donor
     
-    # If no donors make up more than 50% of the entire CAA pool, keep all cells (take ceiling to avoid downsampling border cases)
+    # Calculate spots per new CAA donor
+    total_pool <- sum(mg4$caa_merged %in% c(paste0("A", region, "_new"), paste0("NMA22.A", region))) 
+    caa_summary <- mg4[mg4$caa_merged == paste0("A", region, "_new"),] %>% group_by(sample_id) %>% summarize(count = n()) 
+    
+    # Take ceiling if downsampling to be conservative
     if (max(caa_summary$count) <= round(ceiling(total_pool/2))) {
       new_caa <- c(new_caa, rownames(mg4)[mg4$caa_merged == paste0("A", region, "_new")])
       old_caa <- c(old_caa, rownames(mg4)[mg4$caa_merged == paste0("NMA22.A", region)])
     } else {
-      # There can only be one sample that makes up more than 50% of the entire CAA pool 
       sample <- caa_summary$sample_id[caa_summary$count > round(ceiling(total_pool/2))]
-      n_cells <- sum(mg4$caa_merged == paste0("NMA22.A", region) | (mg4$caa_merged == paste0("A", region, "_new") & mg4$sample_id != sample)) # Calculate remaining cells in the CAA pool
+      n_cells <- sum(mg4$caa_merged == paste0("NMA22.A", region) | (mg4$caa_merged == paste0("A", region, "_new") & mg4$sample_id != sample)) # Calculate remaining spots in the CAA pool
       
       cur_meta <- mg4[mg4$sample_id == sample,]
       set.seed(100)
@@ -370,10 +370,10 @@ for (region in c(1, 3, 4, 9)) {
   }
 }
 
-# Subset for downsampled controls - keep all LCMB cells in all regions 
+# Filter for downsampled controls 
 mg4_downsampled <- mg4[rownames(mg4) %in% c(old_caa, new_caa) | str_detect(mg4$sample_id, "B"),]
 
-# Create variable for total CAA per region
+# Define variable for total CAA per region
 mg4_downsampled$caa_merged_total <- mg4_downsampled$caa_merged
 mg4_downsampled$caa_merged_total[grep("A1", mg4_downsampled$caa_merged_total)] <- "A1"
 mg4_downsampled$caa_merged_total[grep("A3", mg4_downsampled$caa_merged_total)] <- "A3"
@@ -381,11 +381,11 @@ mg4_downsampled$caa_merged_total[grep("A4", mg4_downsampled$caa_merged_total)] <
 mg4_downsampled$caa_merged_total[grep("A9", mg4_downsampled$caa_merged_total)] <- "A9"
 print(unique(mg4_downsampled[,c("sample_id", "caa_merged", "caa_merged_total")]))
 
-# Ensure fold difference < 3 between groups and each group has no more than 3000 spots (within each brain region)
+# Within each region, ensure fold difference < 3 between groups and each group has no more than 3000 spots
 total_cells_keep <- c()
 for (region in c(1, 3, 4, 9)) {
   
-  # Identify group with max cells in region
+  # Identify larger group
   if (sum(mg4_downsampled$caa_merged_total == paste0("A", region)) > sum(mg4_downsampled$sample_id == paste0("NMA22.B", region))) {
     max_group <- "CAA"
     max <- sum(mg4_downsampled$caa_merged_total == paste0("A", region))
@@ -399,10 +399,8 @@ for (region in c(1, 3, 4, 9)) {
   # Calculate fold difference
   fold <- max/min
   
-  # If fold difference is greater than 3 and CAA has more cells, downsample to adjusted target max
+  # If fold difference > 3 and CAA is the larger group, downsample CAA to 3x LCMB
   if (fold > 3 & max_group == "CAA") {
-    
-    # Set target number of cells for CAA (LCMB*3)
     target <- min*3
     
     # Adjust if greater than 3000
@@ -413,7 +411,7 @@ for (region in c(1, 3, 4, 9)) {
     # Calculate z value 
     z <- max - target
     
-    # Calculate target cells per donor
+    # Calculate target spots per donor
     target_per_donor <- round(target/length(unique(mg4_downsampled$sample_id[mg4_downsampled$caa_merged_total == paste0("A", region)])))
     
     # Calculate deviation from target per donor
@@ -437,7 +435,7 @@ for (region in c(1, 3, 4, 9)) {
       positive_summary$n_sample <- positive_summary$count[positive_summary$deviation == min(positive_summary$deviation)]
       
       # If possible, downsample positive donors equally using remaining z
-      remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) # Subtract cells removed in previous step from total z
+      remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) # Subtract spots removed in previous step from total z
       if (remaining_z > 0) {
         positive_summary$n_sample <- positive_summary$n_sample - round(remaining_z/nrow(positive_summary))
       }
@@ -464,7 +462,7 @@ for (region in c(1, 3, 4, 9)) {
       print("Case not covered")
     }
     
-    # Downsample the positive donors, keep all cells for the others
+    # Downsample the positive donors, keep all spots for the others
     cells_keep <- c()
     for (sample in unique(mg4_downsampled$sample_id[mg4_downsampled$caa_merged_total == paste0("A", region)])) {
       if (sample %in% positive_summary$sample_id) {
@@ -483,7 +481,7 @@ for (region in c(1, 3, 4, 9)) {
     # Keep all LCMB + downsampled CAA 
     cells_keep <- rownames(mg4_downsampled)[rownames(mg4_downsampled) %in% cells_keep | mg4_downsampled$sample_id == paste0("NMA22.B", region)]
   }
-  # If fold difference is greater than 3 and LCMB has more cells, downsample to adjusted target max
+  # If fold difference > 3 and LCMB is the larger group, downsample LCMB to 3x CAA
   else if (fold > 3 & max_group == "LCMB") { 
     target <- min*3
     
@@ -494,12 +492,14 @@ for (region in c(1, 3, 4, 9)) {
     cur_meta <- mg4_downsampled[mg4_downsampled$sample_id == paste0("NMA22.B", region),]
     set.seed(100)
     cells_keep <- sample(rownames(cur_meta), target, replace = FALSE)
-    cells_keep <- rownames(mg4_downsampled)[rownames(mg4_downsampled) %in% cells_keep | mg4_downsampled$caa_merged_total == paste0("A", region)] # Keep all CAA cells + downsampled LCMB
-  } else { # Otherwise keep all cells
-    cells_keep <- rownames(mg4_downsampled)[mg4_downsampled$caa_merged_total == paste0("A", region) | mg4_downsampled$sample_id == paste0("NMA22.B", region)] # Keep all cells
+    cells_keep <- rownames(mg4_downsampled)[rownames(mg4_downsampled) %in% cells_keep | mg4_downsampled$caa_merged_total == paste0("A", region)] 
+  } else { 
+    cells_keep <- rownames(mg4_downsampled)[mg4_downsampled$caa_merged_total == paste0("A", region) | mg4_downsampled$sample_id == paste0("NMA22.B", region)] 
   }
   total_cells_keep <- c(total_cells_keep, cells_keep)
 }
+
+# Filter for final downsampled spots
 mg4_downsampled <- mg4_downsampled[total_cells_keep,]
 
 raw <- data.frame(table(mg4$sample_id))
@@ -519,7 +519,7 @@ downsampled <- downsampled[c(paste0(c("A11.170.", "A14.193."), "1"), "NMA22.A1",
 df <- data.frame(sample_id = raw$Var1, raw = raw$Freq, downsampled = downsampled$Freq)
 write.csv(df, paste0(output_folder, "mg4_cohort578_summary.csv"), row.names = FALSE)
 
-# Export iAD and nAD summary data - no need to downsample 
+# Export iAD and nAD summary data - no need to downsample these groups
 df <- s@meta.data[s$Mg.2_enriched == 1 & s$condition %in% c("iAD", "nAD"),]
 df <- df %>% dplyr::group_by(condition, sample_id) %>% dplyr::summarize(n_spots = n())
 df$percent_of_group <- NA
