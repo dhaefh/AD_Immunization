@@ -56,7 +56,7 @@ target <- 3000
 
 # iAD 
 
-# Calculate z value 
+# Calculate spots to remove
 z <- sum(s$condition == "iAD") - target
 
 # Calculate target spots per donor
@@ -79,16 +79,14 @@ if (remaining_z > 0) {
   positive_summary$n_sample <- positive_summary$n_sample - round(remaining_z/nrow(positive_summary))
 }
 
-# Downsample spots with highest amyloid density 
+# Downsample positive donors
 cells_keep <- c()
 for (sample in unique(meta$sample_id[meta$condition == "iAD"])) {
   if (sample %in% positive_summary$sample_id) {
-    
     cur_downsample <- positive_summary$n_sample[positive_summary$sample_id == sample]
     cur_meta <- meta[meta$sample_id == sample,]
     cur_meta <- cur_meta %>% dplyr::arrange(desc(amyloid_fluo))
     cells <- rownames(cur_meta)[1:cur_downsample]
-    
   } else {
     cells <- rownames(meta)[meta$sample_id == sample]
   }
@@ -100,7 +98,7 @@ total_cells_keep <- c(total_cells_keep, cells_keep)
 
 # nAD
 
-# Calculate z value 
+# Calculate spots to remove
 z <- sum(s$condition == "nAD") - target
 
 # Calculate target spots per donor
@@ -123,7 +121,7 @@ if (remaining_z > 0) {
   positive_summary$n_sample <- positive_summary$n_sample - round(remaining_z/nrow(positive_summary))
 }
 
-# Downsample spots with highest amyloid density
+# Downsample positive donors
 cells_keep <- c()
 for (sample in unique(meta$sample_id[meta$condition == "nAD"])) {
   if (sample %in% positive_summary$sample_id) {
