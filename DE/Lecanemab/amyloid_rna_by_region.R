@@ -32,33 +32,9 @@ dir.create(output_folder, showWarnings = FALSE, recursive = TRUE)
 # Load integrated cohort 5/7/8 Seurat object
 s <- readRDS("/path/to/integrated/cohort578/object.rds")
 
-# Define variable for gDNA % 
-s$gDNA_percent <- NA
-s$gDNA_percent[s$sample_id == "NMA22.A1"] <- 1.4
-s$gDNA_percent[s$sample_id == "NMA22.A3"] <- 1.3
-s$gDNA_percent[s$sample_id == "NMA22.A4"] <- 2.5
-s$gDNA_percent[s$sample_id == "NMA22.A9"] <- 1.8
-s$gDNA_percent[s$sample_id == "NMA22.B1"] <- 1.0
-s$gDNA_percent[s$sample_id == "NMA22.B3"] <- 0.1
-s$gDNA_percent[s$sample_id == "NMA22.B4"] <- 0.2
-s$gDNA_percent[s$sample_id == "NMA22.B9"] <- 0.5
-s$gDNA_percent[s$sample_id == "A14.193.1"] <- 15.3
-s$gDNA_percent[s$sample_id == "A14.193.3"] <- 16.3
-s$gDNA_percent[s$sample_id == "A14.193.4"] <- 10.1
-s$gDNA_percent[s$sample_id == "A14.193.9"] <- 1.8
-s$gDNA_percent[s$sample_id == "A11.170.1"] <- 4.4
-s$gDNA_percent[s$sample_id == "A11.170.3"] <- 4.9
-s$gDNA_percent[s$sample_id == "A11.170.4"] <- 0.6
-s$gDNA_percent[s$sample_id == "A11.170.9"] <- 0.8
-print(unique(s@meta.data[,c("sample_id", "gDNA_percent")]))
-
-# Define cortical amyloid enrichment
-s$amyloid_rich <- "not_rich"
-s$amyloid_rich[s$cortical_amyloid > 183 & s$vascular_amyloid == 0] <- "rich"
-
 # Subset for cortical amyloid-rich spots in gray matter 
 gray_layers <- unique(s$manual_layer[grep("gray", s$manual_layer)])
-s <- subset(s, amyloid_rich == "rich" & manual_layer %in% gray_layers)
+s <- subset(s, amyloid_neighbor_final == "amyloid" & manual_layer %in% gray_layers)
 gc()
 
 # Downsample spots with highest amyloid density

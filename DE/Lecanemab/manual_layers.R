@@ -32,41 +32,9 @@ s <- readRDS("/path/to/integrated/cohort578/object.rds")
 # Define filter operator 
 `%notin%` <- Negate(`%in%`)
 
-# Define gDNA %
-s$gDNA_percent <- NA
-s$gDNA_percent[s$sample_id == "NMA22.A1"] <- 1.4
-s$gDNA_percent[s$sample_id == "NMA22.A3"] <- 1.3
-s$gDNA_percent[s$sample_id == "NMA22.A4"] <- 2.5
-s$gDNA_percent[s$sample_id == "NMA22.A9"] <- 1.8
-s$gDNA_percent[s$sample_id == "NMA22.B1"] <- 1.0
-s$gDNA_percent[s$sample_id == "NMA22.B3"] <- 0.1
-s$gDNA_percent[s$sample_id == "NMA22.B4"] <- 0.2
-s$gDNA_percent[s$sample_id == "NMA22.B9"] <- 0.5
-s$gDNA_percent[s$sample_id == "A14.193.1"] <- 15.3
-s$gDNA_percent[s$sample_id == "A14.193.3"] <- 16.3
-s$gDNA_percent[s$sample_id == "A14.193.4"] <- 10.1
-s$gDNA_percent[s$sample_id == "A14.193.9"] <- 1.8
-s$gDNA_percent[s$sample_id == "A11.170.1"] <- 4.4
-s$gDNA_percent[s$sample_id == "A11.170.3"] <- 4.9
-s$gDNA_percent[s$sample_id == "A11.170.4"] <- 0.6
-s$gDNA_percent[s$sample_id == "A11.170.9"] <- 0.8
-print(sum(is.na(s$gDNA_percent)))
-
-# Define region 
-s$region <- NA
-s$region[s$sample_id %in% paste0(c("A14.193.", "A11.170.", "NMA22.A", "NMA22.B"), 1)] <- "FCX"
-s$region[s$sample_id %in% paste0(c("A14.193.", "A11.170.", "NMA22.A", "NMA22.B"), 3)] <- "TCX"
-s$region[s$sample_id %in% paste0(c("A14.193.", "A11.170.", "NMA22.A", "NMA22.B"), 4)] <- "PCX"
-s$region[s$sample_id %in% paste0(c("A14.193.", "A11.170.", "NMA22.A", "NMA22.B"), 9)] <- "HIPP"
-
 # Subset for non-hippocampus
 s <- subset(s, region %in% c("FCX", "TCX", "PCX"))
 gc()
-
-# Define condition variable
-s$condition <- NA
-s$condition[grep("\\.B", s$sample_id)] <- "LCMB"
-s$condition[grep("\\.A|^A", s$sample_id)] <- "CAA"
 
 # Combine counts across samples
 DefaultAssay(s) <- "Spatial"

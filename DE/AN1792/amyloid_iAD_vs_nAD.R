@@ -39,9 +39,8 @@ s <- readRDS("/path/to/integrated/cohort1/object.rds")
 p_thresh <- 0.05
 fc_thresh <- log2(1.5) 
 
-# Filter for amyloid-rich spots in gray matter for iAD and nAD, excluding vascular amyloid rich spots + neighbors
-s <- subset(s, manual_annotation %notin% c("white", "meninges") & amyloid_filter == "include" & vessel_neighbor == "not_vessel" &
-              amyloid_fluo > 183  & condition %in% c("iAD", "nAD"))
+# Filter for amyloid-rich spots in gray matter for iAD and nAD
+s <- subset(s, manual_annotation %notin% c("white", "meninges") & amyloid_neighbor_final == "amyloid" & condition %in% c("iAD", "nAD"))
 gc()
 
 # Remove samples with 1 spot (Seurat error subsetting + in PrepSCTFindMarkers)

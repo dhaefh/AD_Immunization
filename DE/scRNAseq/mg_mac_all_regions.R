@@ -425,16 +425,9 @@ gc()
 # Define comparison to run
 comparison <- "LCMB_vs_CAA"
 
-# Make group and donor factors
+# Make group, sample and region factors
 s$group_de <- factor(s$group_de)
 s$sample_merged <- factor(s$sample_merged)
-
-# Define region variable
-s$sample_short <- str_split_fixed(s$sample_merged, "\\.", 3)[,3]
-s@meta.data <- s@meta.data %>% mutate(region = case_when(sample_short %in% c("A1", "B1") ~ "FCX",
-                                                         sample_short %in% c("A3", "B3") ~ "TCX",
-                                                         sample_short %in% c("A4", "B4") ~ "PCX",
-                                                         sample_short %in% c("A9", "B9") ~ "HIPP"))
 s$region <- factor(s$region)
 
 # Set idents 

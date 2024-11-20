@@ -28,19 +28,10 @@ output_folder <- "/path/to/amyloid/by/region/protein/output/folder/"
 
 # Load cohort 5/7/8 protein Seurat object and integrated cohort 5/7/8 RNA Seurat object 
 s <- readRDS("/path/to/cohort578/final/protein/object.rds")
-temp <- readRDS("/path/to/integrated/cohort578/object.rds")
-
-# Add meta data to protein object
-sum(row.names(temp@meta.data) != row.names(s@meta.data))
-s@meta.data <- cbind(s@meta.data, temp@meta.data[,c("manual_layer", "cortical_amyloid", "vascular_amyloid")])
-
-# Define cortical amyloid enrichment
-s$amyloid_rich <- "not_rich"
-s$amyloid_rich[s$cortical_amyloid > 183 & s$vascular_amyloid == 0] <- "rich"
 
 # Subset for cortical amyloid-rich spots in gray matter 
 gray_layers <- unique(s$manual_layer[grep("gray", s$manual_layer)])
-s <- subset(s, amyloid_rich == "rich" & manual_layer %in% gray_layers)
+s <- subset(s, amyloid_neighbor_final == "amyloid" & manual_layer %in% gray_layers)
 gc()
 
 # Downsample spots with highest amyloid density

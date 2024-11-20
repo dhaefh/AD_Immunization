@@ -39,12 +39,12 @@ s <- readRDS("/path/to/integrated/cohort1/object.rds")
 DefaultAssay(s) <- "Spatial"
 s <- JoinLayers(s)
 
-# Add meta data with C2L enrichment 
-meta <- read.csv("/path/to/cohort1/c2l/metadata.csv", row.names = 1)
-s@meta.data <- cbind(s@meta.data, meta[,29:46])
-
 # Define cell type names and comparisons to run
-cell_types <- colnames(s@meta.data)[61:78]
+cell_types <- c("FB_enriched", "Pericyte_enriched", "Peripheral.Immune.Cell_enriched", "SMC_enriched",
+                "endothelial_enriched", "Interneuron_enriched", "L2.3.EN_enriched", "L4.EN_enriched", 
+                "L4.5.EN_enriched", "L5.EN_enriched", "L5.6.EN_enriched", "L5.6.CCa.EN_enriched", 
+                "L5.6.CCb.EN_enriched", "MYO16.EN_enriched", "OPC_enriched", "oligodendrocyte_enriched", 
+                "Astrocyte_enriched", "Microglia_enriched")
 comparisons <- c("ext_vs_nAD", "lim_vs_nAD", "iAD_vs_nAD", "NNC_vs_nAD", "nAD_vs_NNC")
 
 # Define DE thresholds
