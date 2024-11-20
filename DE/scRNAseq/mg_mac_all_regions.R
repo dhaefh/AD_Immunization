@@ -127,13 +127,13 @@ for (type in unique(s$cell_type_de)) {
       next
     }
     
-    # If both groups have > 3000, set target max of both to 3000 and downsample accordingly
+    # If both groups have > 3000, downsample to 3000 cells each
     if (sum(meta$caa_merged_total == paste0("A", region)) > 3000 & sum(meta$sample_merged == paste0("NMA22.205.B", region)) > 3000) {
       
-      # Set target for both groups
+      # Set uniform target
       target <- 3000
       
-      # Calculate z value for CAA 
+      # Calculate cells to remove for CAA 
       z <- sum(meta$caa_merged_total == paste0("A", region)) - target
       
       # Calculate target cells per donor
@@ -154,13 +154,10 @@ for (type in unique(s$cell_type_de)) {
         positive_summary$n_sample <- target_per_donor
       } 
       
-      # Else if z is large enough to reach min positive deviation, downsample to min positive deviation 
+      # Else if z is large enough to reach min positive deviation, downsample to min positive deviation, then downsample equally
       else if (z >= sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation))) {
-        
         positive_summary$n_sample <- positive_summary$count[positive_summary$deviation == min(positive_summary$deviation)]
-        
-        # If possible, downsample positive donors equally using remaining z
-        remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) # Subtract cells removed in previous step from total z
+        remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation))
         if (remaining_z > 0) {
           positive_summary$n_sample <- positive_summary$n_sample - round(remaining_z/nrow(positive_summary))
         }
@@ -168,11 +165,8 @@ for (type in unique(s$cell_type_de)) {
       
       # Else if z is at least the difference between top 2 positive deviations, equalize the top 2, then downsample top 2 equally 
       else if (z >= positive_summary$deviation[1] - positive_summary$deviation[2]) {
-        
-        positive_summary$n_sample <- positive_summary$count # Initialize with actual count
-        positive_summary$n_sample[1] <- positive_summary$n_sample[2] # Downsample highest to second highest
-        
-        # If possible, downsample top 2 donors equally using remaining z
+        positive_summary$n_sample <- positive_summary$count 
+        positive_summary$n_sample[1] <- positive_summary$n_sample[2] 
         remaining_z <- z - (positive_summary$deviation[1] - positive_summary$deviation[2])
         if (remaining_z > 0) {
           positive_summary$n_sample[1:2] <- positive_summary$n_sample[1:2] - round(remaining_z/2)
@@ -186,7 +180,7 @@ for (type in unique(s$cell_type_de)) {
       } else {
         print("Case not covered")
       }
-      
+
       # Downsample the positive donors, keep all cells for the others
       cells_keep <- c()
       for (sample in unique(meta$sample_merged[meta$caa_merged_total == paste0("A", region)])) {
@@ -223,12 +217,12 @@ for (type in unique(s$cell_type_de)) {
       if (fold > 3 & max_group == "CAA") {
         target <- min*3
         
-        # Adjust if greater than 3000
+        # Adjust target if greater than 3000
         if (target > 3000) {
           target <- 3000
         }
         
-        # Calculate z value 
+        # Calculate cells to remove 
         z <- max - target
         
         # Calculate target cells per donor
@@ -249,13 +243,10 @@ for (type in unique(s$cell_type_de)) {
           positive_summary$n_sample <- target_per_donor
         } 
         
-        # Else if z is large enough to reach min positive deviation, downsample to min positive deviation 
+        # Else if z is large enough to reach min positive deviation, downsample to min positive deviation, then downsample equally
         else if (z >= sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation))) {
-          
           positive_summary$n_sample <- positive_summary$count[positive_summary$deviation == min(positive_summary$deviation)]
-          
-          # If possible, downsample positive donors equally using remaining z
-          remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) # Subtract cells removed in previous step from total z
+          remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) 
           if (remaining_z > 0) {
             positive_summary$n_sample <- positive_summary$n_sample - round(remaining_z/nrow(positive_summary))
           }
@@ -263,11 +254,8 @@ for (type in unique(s$cell_type_de)) {
         
         # Else if z is at least the difference between top 2 positive deviations, equalize the top 2, then downsample top 2 equally 
         else if (z >= positive_summary$deviation[1] - positive_summary$deviation[2]) {
-          
-          positive_summary$n_sample <- positive_summary$count # Initialize with actual count
-          positive_summary$n_sample[1] <- positive_summary$n_sample[2] # Downsample highest to second highest
-          
-          # If possible, downsample top 2 donors equally using remaining z
+          positive_summary$n_sample <- positive_summary$count 
+          positive_summary$n_sample[1] <- positive_summary$n_sample[2] 
           remaining_z <- z - (positive_summary$deviation[1] - positive_summary$deviation[2])
           if (remaining_z > 0) {
             positive_summary$n_sample[1:2] <- positive_summary$n_sample[1:2] - round(remaining_z/2)
@@ -301,7 +289,7 @@ for (type in unique(s$cell_type_de)) {
       else if (fold > 3 & max_group == "LCMB") { 
         target <- min*3
         
-        # Adjust if greater than 3000
+        # Adjust target if greater than 3000
         if (target > 3000) {
           target <- 3000
         }
@@ -314,7 +302,7 @@ for (type in unique(s$cell_type_de)) {
       else if (sum(meta$caa_merged_total == paste0("A", region)) > 3000) {
         target <- 3000
         
-        # Calculate z value for CAA 
+        # Calculate cells to remove for CAA 
         z <- sum(meta$caa_merged_total == paste0("A", region)) - target
         
         # Calculate target cells per donor
@@ -335,13 +323,10 @@ for (type in unique(s$cell_type_de)) {
           positive_summary$n_sample <- target_per_donor
         } 
         
-        # Else if z is large enough to reach min positive deviation, downsample to min positive deviation 
+        # Else if z is large enough to reach min positive deviation, downsample to min positive deviation, then downsample equally
         else if (z >= sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation))) {
-          
           positive_summary$n_sample <- positive_summary$count[positive_summary$deviation == min(positive_summary$deviation)]
-          
-          # If possible, downsample positive donors equally using remaining z
-          remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) # Subtract cells removed in previous step from total z
+          remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation))
           if (remaining_z > 0) {
             positive_summary$n_sample <- positive_summary$n_sample - round(remaining_z/nrow(positive_summary))
           }
@@ -349,11 +334,8 @@ for (type in unique(s$cell_type_de)) {
         
         # Else if z is at least the difference between top 2 positive deviations, equalize the top 2, then downsample top 2 equally 
         else if (z >= positive_summary$deviation[1] - positive_summary$deviation[2]) {
-          
-          positive_summary$n_sample <- positive_summary$count # Initialize with actual count
-          positive_summary$n_sample[1] <- positive_summary$n_sample[2] # Downsample highest to second highest
-          
-          # If possible, downsample top 2 donors equally using remaining z
+          positive_summary$n_sample <- positive_summary$count 
+          positive_summary$n_sample[1] <- positive_summary$n_sample[2] 
           remaining_z <- z - (positive_summary$deviation[1] - positive_summary$deviation[2])
           if (remaining_z > 0) {
             positive_summary$n_sample[1:2] <- positive_summary$n_sample[1:2] - round(remaining_z/2)
@@ -390,7 +372,6 @@ for (type in unique(s$cell_type_de)) {
         set.seed(100)
         cells_keep <- sample(rownames(meta)[meta$sample_merged == paste0("NMA22.205.B", region)], target, replace = FALSE)
         cells_keep <- rownames(meta)[rownames(meta) %in% cells_keep | meta$caa_merged_total == paste0("A", region)] 
-        
       } else { 
         cells_keep <- rownames(meta)[meta$caa_merged_total == paste0("A", region) | meta$sample_merged == paste0("NMA22.205.B", region)] 
       }
