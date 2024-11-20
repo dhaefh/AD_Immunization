@@ -58,7 +58,7 @@ df <- s@meta.data[s$Mg.2_enriched == 1 & s$condition %in% c("iAD", "nAD"),]
 
 # Downsample nAD
 
-# Calculate z value 
+# Calculate spots to remove
 target <- 3*sum(df$condition_clearance == "ext")
 z <- sum(df$condition == "nAD") - target
 
@@ -82,16 +82,14 @@ if (remaining_z > 0) {
   positive_summary$n_sample <- positive_summary$n_sample - round(remaining_z/nrow(positive_summary))
 }
 
-# Downsample spots 
+# Downsample positive donors
 cells_keep <- c()
 for (sample in unique(df$sample_id[df$condition == "nAD"])) {
   if (sample %in% positive_summary$sample_id) {
-    
     cur_downsample <- positive_summary$n_sample[positive_summary$sample_id == sample]
     cur_meta <- df[df$sample_id == sample,]
     set.seed(100)
     cells <- sample(rownames(cur_meta), cur_downsample, replace = FALSE)
-    
   } else {
     cells <- rownames(df)[df$sample_id == sample]
   }
@@ -101,7 +99,10 @@ for (sample in unique(df$sample_id[df$condition == "nAD"])) {
 # Subset for downsampled nAD
 df <- df[df$condition != "nAD" | rownames(df) %in% cells_keep,]
 
+# Define final downsampled Mg-4 spots
 mg2_keep <- rownames(df)
+
+# Generate summary table
 df <- df %>% dplyr::group_by(condition_clearance, sample_id) %>% dplyr::summarize(n_spots = n())
 df$percent_of_group <- NA
 for (condition in unique(df$condition_clearance)) {
@@ -119,7 +120,7 @@ df <- df[df$sample_id != "AN1792.102.6" | rownames(df) %in% ext_keep,]
 
 # Downsample nAD
 
-# Calculate z value 
+# Calculate spots to remove
 target <- 3*sum(df$condition_clearance == "ext")
 z <- sum(df$condition == "nAD") - target
 
@@ -143,16 +144,14 @@ if (remaining_z > 0) {
   positive_summary$n_sample <- positive_summary$n_sample - round(remaining_z/nrow(positive_summary))
 }
 
-# Downsample spots
+# Downsample positive donors
 cells_keep <- c()
 for (sample in unique(df$sample_id[df$condition == "nAD"])) {
   if (sample %in% positive_summary$sample_id) {
-    
     cur_downsample <- positive_summary$n_sample[positive_summary$sample_id == sample]
     cur_meta <- df[df$sample_id == sample,]
     set.seed(100)
     cells <- sample(rownames(cur_meta), cur_downsample, replace = FALSE)
-    
   } else {
     cells <- rownames(df)[df$sample_id == sample]
   }
@@ -164,7 +163,7 @@ df <- df[df$condition != "nAD" | rownames(df) %in% cells_keep,]
 
 # Downsample iAD-Lim
 
-# Calculate z value 
+# Calculate spots to remove
 target <- 3*sum(df$condition == "nAD")
 z <- sum(df$condition_clearance == "lim") - target
 
@@ -181,18 +180,16 @@ summary <- summary %>% dplyr::arrange(desc(deviation))
 # Filter for donors with positive deviation
 positive_summary <- summary[summary$deviation > 0,]
 
-# Downsample top positive donor only
+# Downsample largest donor
 positive_summary$n_sample <- positive_summary$count
 positive_summary$n_sample[1] <- positive_summary$n_sample[1] - z
 cells_keep <- c()
 for (sample in unique(df$sample_id[df$condition_clearance == "lim"])) {
   if (sample %in% positive_summary$sample_id) {
-    
     cur_downsample <- positive_summary$n_sample[positive_summary$sample_id == sample]
     cur_meta <- df[df$sample_id == sample,]
     set.seed(100)
     cells <- sample(rownames(cur_meta), cur_downsample, replace = FALSE)
-    
   } else {
     cells <- rownames(df)[df$sample_id == sample]
   }
@@ -202,7 +199,10 @@ for (sample in unique(df$sample_id[df$condition_clearance == "lim"])) {
 # Subset for downsampled iAD-Lim
 df <- df[df$condition_clearance != "lim" | rownames(df) %in% cells_keep,]
 
+# Define final downsampled Mg-4 spots
 mg4_keep <- rownames(df)
+
+# Generate summary table
 df <- df %>% dplyr::group_by(condition_clearance, sample_id) %>% dplyr::summarize(n_spots = n())
 df$percent_of_group <- NA
 for (condition in unique(df$condition_clearance)) {
