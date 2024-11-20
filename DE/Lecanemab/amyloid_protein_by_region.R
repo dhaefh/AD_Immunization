@@ -26,7 +26,7 @@ suppressMessages({
 # Define output folder
 output_folder <- "/path/to/amyloid/by/region/protein/output/folder/"
 
-# Load cohort 5/7/8 protein Seurat object and integrated cohort 5/7/8 RNA Seurat object 
+# Load cohort 5/7/8 protein Seurat object  
 s <- readRDS("/path/to/cohort578/final/protein/object.rds")
 
 # Subset for cortical amyloid-rich spots in gray matter 
