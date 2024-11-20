@@ -131,7 +131,7 @@ for (type in unique(s$cell_type_de)) {
       # Set uniform target
       target <- 3000
       
-      # Calculate cells to remove for CAA 
+      # Calculate cells to remove 
       z <- sum(meta$caa_merged_total == paste0("A", region)) - target
       
       # Calculate target cells per donor
@@ -300,7 +300,7 @@ for (type in unique(s$cell_type_de)) {
       else if (sum(meta$caa_merged_total == paste0("A", region)) > 3000) {
         target <- 3000
         
-        # Calculate cells to remove for CAA 
+        # Calculate cells to remove 
         z <- sum(meta$caa_merged_total == paste0("A", region)) - target
         
         # Calculate target cells per donor

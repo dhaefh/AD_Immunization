@@ -70,12 +70,10 @@ for (region in c(1, 3, 4, 9)) {
       old_caa <- c(old_caa, rownames(meta)[meta$caa_merged == paste0("NMA22.A", region)])
     } else {
       sample <- caa_summary$sample_id[caa_summary$count > round(ceiling(total_pool/2))]
-      n_cells <- sum(meta$caa_merged == paste0("NMA22.A", region) | (meta$caa_merged == paste0("A", region, "_new") & meta$sample_id != sample)) # Calculate remaining spots in the CAA pool
-      
+      n_cells <- sum(meta$caa_merged == paste0("NMA22.A", region) | (meta$caa_merged == paste0("A", region, "_new") & meta$sample_id != sample)) 
       cur_meta <- meta[meta$sample_id == sample,]
       cur_meta <- cur_meta %>% dplyr::arrange(desc(cortical_amyloid))
       cells <- rownames(cur_meta)[1:n_cells]
-      
       new_caa <- c(new_caa, rownames(meta)[rownames(meta) %in% cells | (meta$caa_merged == paste0("A", region, "_new") & meta$sample_id != sample)])
       old_caa <- c(old_caa, rownames(meta)[meta$caa_merged == paste0("NMA22.A", region)])
     }
@@ -114,12 +112,12 @@ for (region in c(1, 3, 4, 9)) {
   if (fold > 3 & max_group == "CAA") {
     target <- min*3
     
-    # Adjust if greater than 3000
+    # Adjust target if greater than 3000
     if (target > 3000) {
       target <- 3000
     }
     
-    # Calculate z value 
+    # Calculate spots to remove 
     z <- max - target
     
     # Calculate target spots per donor
@@ -140,13 +138,10 @@ for (region in c(1, 3, 4, 9)) {
       positive_summary$n_sample <- target_per_donor
     } 
     
-    # Else if z is large enough to reach min positive deviation, downsample to min positive deviation 
+    # Else if z is large enough to reach min positive deviation, downsample to min positive deviation, then downsample equally
     else if (z >= sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation))) {
-      
       positive_summary$n_sample <- positive_summary$count[positive_summary$deviation == min(positive_summary$deviation)]
-      
-      # If possible, downsample positive donors equally using remaining z
-      remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) # Subtract spots removed in previous step from total z
+      remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) 
       if (remaining_z > 0) {
         positive_summary$n_sample <- positive_summary$n_sample - round(remaining_z/nrow(positive_summary))
       }
@@ -154,11 +149,8 @@ for (region in c(1, 3, 4, 9)) {
     
     # Else if z is at least the difference between top 2 positive deviations, equalize the top 2, then downsample top 2 equally 
     else if (z >= positive_summary$deviation[1] - positive_summary$deviation[2]) {
-      
-      positive_summary$n_sample <- positive_summary$count # Initialize with actual count
-      positive_summary$n_sample[1] <- positive_summary$n_sample[2] # Downsample highest to second highest
-      
-      # If possible, downsample top 2 donors equally using remaining z
+      positive_summary$n_sample <- positive_summary$count 
+      positive_summary$n_sample[1] <- positive_summary$n_sample[2] 
       remaining_z <- z - (positive_summary$deviation[1] - positive_summary$deviation[2])
       if (remaining_z > 0) {
         positive_summary$n_sample[1:2] <- positive_summary$n_sample[1:2] - round(remaining_z/2)
@@ -196,7 +188,7 @@ for (region in c(1, 3, 4, 9)) {
   else if (fold > 3 & max_group == "LCMB") { 
     target <- min*3
     
-    # Adjust if greater than 3000
+    # Adjust target if greater than 3000
     if (target > 3000) {
       target <- 3000
     }
@@ -210,7 +202,7 @@ for (region in c(1, 3, 4, 9)) {
   else if (sum(meta$caa_merged_total == paste0("A", region)) > 3000) {
     target <- 3000
     
-    # Calculate z value for CAA 
+    # Calculate spots to remove 
     z <- sum(meta$caa_merged_total == paste0("A", region)) - target
     
     # Calculate target spots per donor
@@ -231,13 +223,10 @@ for (region in c(1, 3, 4, 9)) {
       positive_summary$n_sample <- target_per_donor
     } 
     
-    # Else if z is large enough to reach min positive deviation, downsample to min positive deviation 
+    # Else if z is large enough to reach min positive deviation, downsample to min positive deviation, then downsample equally
     else if (z >= sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation))) {
-      
       positive_summary$n_sample <- positive_summary$count[positive_summary$deviation == min(positive_summary$deviation)]
-      
-      # If possible, downsample positive donors equally using remaining z
-      remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) # Subtract spots removed in previous step from total z
+      remaining_z <- z - sum(positive_summary$deviation[positive_summary$deviation > min(positive_summary$deviation)] - min(positive_summary$deviation)) 
       if (remaining_z > 0) {
         positive_summary$n_sample <- positive_summary$n_sample - round(remaining_z/nrow(positive_summary))
       }
@@ -245,11 +234,8 @@ for (region in c(1, 3, 4, 9)) {
     
     # Else if z is at least the difference between top 2 positive deviations, equalize the top 2, then downsample top 2 equally 
     else if (z >= positive_summary$deviation[1] - positive_summary$deviation[2]) {
-      
-      positive_summary$n_sample <- positive_summary$count # Initialize with actual count
-      positive_summary$n_sample[1] <- positive_summary$n_sample[2] # Downsample highest to second highest
-      
-      # If possible, downsample top 2 donors equally using remaining z
+      positive_summary$n_sample <- positive_summary$count 
+      positive_summary$n_sample[1] <- positive_summary$n_sample[2] 
       remaining_z <- z - (positive_summary$deviation[1] - positive_summary$deviation[2])
       if (remaining_z > 0) {
         positive_summary$n_sample[1:2] <- positive_summary$n_sample[1:2] - round(remaining_z/2)
