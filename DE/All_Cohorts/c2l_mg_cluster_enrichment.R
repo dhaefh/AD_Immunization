@@ -29,99 +29,15 @@ suppressMessages({
 output_folder <- "/path/to/mg/cluster/mast/output/"
 dir.create(output_folder, showWarnings = FALSE, recursive = TRUE)
 
-# Define filter operator
-`%notin%` <- Negate(`%in%`)
-
-# Load all-cohorts integrated Seurat object and subset for gray matter
+# Load all-cohorts integrated Seurat object and subset for gray matter 
 s <- readRDS("/path/to/integrated/all/cohorts/object.rds")
 gray_layers <- unique(s$manual_layer[grep("^gray", s$manual_layer)])
 s <- subset(s, manual_layer %in% gray_layers)
 gc()
 
-# Add C2L enrichment data for microglia clusters
-meta <- read.csv("path/to/all/cohorts/c2l/metadata.csv", row.names = 1)
-s@meta.data <- cbind(s@meta.data, meta[,56:60])
-
-# Load cohort 5/7/8 data
-cohort578 <- readRDS("/path/to/integrated/cohort578/object.rds")
-cohort578 <- cohort578@meta.data
+# Subset for cortical amyloid-rich spots and first + second order neighbors (note: already subset for gray matter)
+s <- subset(s, amyloid_neighbor_final %in% c("amyloid", "first_neighbor", "second_neighbor"))
 gc()
-
-# Load cohort 1 data
-cohort1 <- readRDS("/path/to/integrated/cohort1/object.rds")
-cohort1 <- cohort1@meta.data
-gc()
-
-# Define age and sex variables for cohort 5/7/8
-cohort578$age <- NA
-cohort578$sex <- NA
-cohort578$age[grep("^NMA22.B", cohort578$sample_id)] <- 65
-cohort578$sex[grep("^NMA22.B", cohort578$sample_id)] <- "f"
-cohort578$age[grep("^NMA22.A", cohort578$sample_id)] <- 82
-cohort578$sex[grep("^NMA22.A", cohort578$sample_id)] <- "m"
-cohort578$age[grep("^A11.170", cohort578$sample_id)] <- 66
-cohort578$sex[grep("^A11.170", cohort578$sample_id)] <- "f"
-cohort578$age[grep("^A14.193", cohort578$sample_id)] <- 64
-cohort578$sex[grep("^A14.193", cohort578$sample_id)] <- "f"
-
-# Define gDNA % variable for cohort 5/7/8
-cohort578$gDNA_percent <- NA
-cohort578$gDNA_percent[cohort578$sample_id == "NMA22.A1"] <- 1.4
-cohort578$gDNA_percent[cohort578$sample_id == "NMA22.A3"] <- 1.3
-cohort578$gDNA_percent[cohort578$sample_id == "NMA22.A4"] <- 2.5
-cohort578$gDNA_percent[cohort578$sample_id == "NMA22.A9"] <- 1.8
-cohort578$gDNA_percent[cohort578$sample_id == "NMA22.B1"] <- 1.0
-cohort578$gDNA_percent[cohort578$sample_id == "NMA22.B3"] <- 0.1
-cohort578$gDNA_percent[cohort578$sample_id == "NMA22.B4"] <- 0.2
-cohort578$gDNA_percent[cohort578$sample_id == "NMA22.B9"] <- 0.5
-cohort578$gDNA_percent[cohort578$sample_id == "A14.193.1"] <- 15.3
-cohort578$gDNA_percent[cohort578$sample_id == "A14.193.3"] <- 16.3
-cohort578$gDNA_percent[cohort578$sample_id == "A14.193.4"] <- 10.1
-cohort578$gDNA_percent[cohort578$sample_id == "A14.193.9"] <- 1.8
-cohort578$gDNA_percent[cohort578$sample_id == "A11.170.1"] <- 4.4
-cohort578$gDNA_percent[cohort578$sample_id == "A11.170.3"] <- 4.9
-cohort578$gDNA_percent[cohort578$sample_id == "A11.170.4"] <- 0.6
-cohort578$gDNA_percent[cohort578$sample_id == "A11.170.9"] <- 0.8
-
-# Define condition variable for cohort 5/7/8
-cohort578$condition <- NA
-cohort578$condition[grep("\\.B", cohort578$sample_id)] <- "LCMB"
-cohort578$condition[grep("\\.A|^A", cohort578$sample_id)] <- "CAA"
-print(sum(is.na(cohort578$condition)))
-cohort578$condition_clearance <- cohort578$condition
-
-# Add meta data to full Seurat object
-cohort578 <- cohort578[rownames(cohort578) %in% rownames(s@meta.data),]
-cohort1 <- cohort1[rownames(cohort1) %in% rownames(s@meta.data),]
-print(nrow(cohort1) + nrow(cohort578) == nrow(s@meta.data))
-cohort1 <- cohort1[,c("sample_barcode", "amyloid_fluo", "vessel_neighbor", "cortical_amyloid_neighbor_broad", 
-                      "age", "sex", "gDNA_percent", "condition", "condition_clearance")]
-colnames(cohort1)[2] <- "amyloid"
-cohort578 <- cohort578[,c("sample_barcode", "cortical_amyloid", "vessel_neighbor", "cortical_amyloid_neighbor_broad", 
-                          "age", "sex", "gDNA_percent", "condition", "condition_clearance")]
-colnames(cohort578)[2] <- "amyloid"
-meta <- rbind(cohort1, cohort578)
-meta <- meta[rownames(s@meta.data),]
-s$amyloid <- meta$amyloid
-s$vessel_neighbor <- meta$vessel_neighbor
-s$cortical_amyloid_neighbor_broad <- meta$cortical_amyloid_neighbor_broad
-s$sex <- meta$sex
-s$age <- meta$age
-s$gDNA_percent <- meta$gDNA_percent
-s$condition <- meta$condition
-s$condition_clearance <- meta$condition_clearance
-
-# Subset for amyloid-rich spots and first + second order neighbors, excluding vascular amyloid rich spots + neighbors (note that we previously subset for gray matter)
-s <- subset(s, cortical_amyloid_neighbor_broad %in% c("amyloid", "neighbor") & vessel_neighbor == "not_vessel")
-gc()
-
-# Define region variable
-s$region <- "FCX" # nAD and iAD are all FCX
-s$region[s$sample_id %in% paste0(c("A14.193.", "A11.170.", "NMA22.A", "NMA22.B"), 1)] <- "FCX"
-s$region[s$sample_id %in% paste0(c("A14.193.", "A11.170.", "NMA22.A", "NMA22.B"), 3)] <- "TCX"
-s$region[s$sample_id %in% paste0(c("A14.193.", "A11.170.", "NMA22.A", "NMA22.B"), 4)] <- "PCX"
-s$region[s$sample_id %in% paste0(c("A14.193.", "A11.170.", "NMA22.A", "NMA22.B"), 9)] <- "HIPP"
-print(unique(s@meta.data[,c("sample_id", "sex", "age", "region", "gDNA_percent", "condition", "condition_clearance")]))
 
 # Define DE thresholds
 p_thresh <- 0.05

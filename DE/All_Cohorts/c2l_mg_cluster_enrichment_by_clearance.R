@@ -35,11 +35,7 @@ gray_layers <- unique(s$manual_layer[grep("^gray", s$manual_layer)])
 s <- subset(s, manual_layer %in% gray_layers)
 gc()
 
-# Add C2L enrichment data for microglia clusters
-meta <- read.csv("path/to/all/cohorts/c2l/metadata.csv", row.names = 1)
-s@meta.data <- cbind(s@meta.data, meta[,56:60])
-
-# Load cohort 1 data and subset Seurat object for spots in cohort 1 
+# Subset for cohort 1  
 cohort1 <- readRDS("/path/to/integrated/cohort1/object.rds")
 cohort1 <- cohort1@meta.data
 gc()
@@ -47,24 +43,8 @@ cohort1 <- cohort1[rownames(cohort1) %in% rownames(s@meta.data),]
 s <- subset(s, cells = rownames(cohort1))
 gc()
 
-# Define filter operator
-`%notin%` <- Negate(`%in%`)
-
-# Add meta data to object 
-meta <- cohort1[,c("sample_barcode", "amyloid_fluo", "vessel_neighbor", "cortical_amyloid_neighbor_broad", 
-                   "age", "sex", "gDNA_percent", "condition", "condition_clearance")]
-meta <- meta[rownames(s@meta.data),]
-s$amyloid <- meta$amyloid_fluo
-s$vessel_neighbor <- meta$vessel_neighbor
-s$cortical_amyloid_neighbor_broad <- meta$cortical_amyloid_neighbor_broad
-s$sex <- meta$sex
-s$age <- meta$age
-s$gDNA_percent <- meta$gDNA_percent
-s$condition <- meta$condition
-s$condition_clearance <- meta$condition_clearance
-
-# Subset for amyloid-rich spots and first + second order neighbors, excluding vascular amyloid rich spots + neighbors (note that we previously subset for gray matter)
-s <- subset(s, cortical_amyloid_neighbor_broad %in% c("amyloid", "neighbor") & vessel_neighbor == "not_vessel")
+# Subset for cortical amyloid-rich spots and first + second order neighbors (note: already subset for gray matter)
+s <- subset(s, amyloid_neighbor_final %in% c("amyloid", "first_neighbor", "second_neighbor"))
 gc()
 
 # Define DE thresholds
