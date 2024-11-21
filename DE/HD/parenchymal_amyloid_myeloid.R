@@ -76,7 +76,7 @@ ident.2 <- str_split_fixed(comparison, "_vs_", 2)[2]
 
 # Calculate fold change and percent expression using SCT data
 LFC <- FoldChange(object = s, ident.1 = ident.1, ident.2 = ident.2, fc.name = "avg_log2FC", base = 2,
-                  assay = "SCT", layer = "data") %>% data.frame()
+                  assay = "SCT", slot = "data") %>% data.frame()
 
 # Test genes expressed in 1% of either group
 genes_keep <- row.names(LFC)[LFC$pct.1 >= 0.01 | LFC$pct.2 >= 0.01]

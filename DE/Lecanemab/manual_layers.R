@@ -72,7 +72,7 @@ for (cluster in unique(s$manual_layer)) {
   
   # Calculate percent expression for comparison groups based on raw counts
   LFC <- FoldChange(object = clust_s, ident.1 = ident.1, ident.2 = ident.2, fc.name = "log2FoldChange", base = 2, 
-                    assay = "Spatial", layer = "counts") %>% data.frame()
+                    assay = "Spatial", slot = "counts") %>% data.frame()
   
   # Filter for genes expressed in 1% of either group
   genes_keep <- row.names(LFC)[LFC$pct.1 >= 0.01 | LFC$pct.2 >= 0.01]
