@@ -76,7 +76,7 @@ for (region in c(1, 3, 4, 9)) {
     total_pool <- sum(mg2$caa_merged %in% c(paste0("A", region, "_new"), paste0("NMA22.A", region))) 
     caa_summary <- mg2[mg2$caa_merged == paste0("A", region, "_new"),] %>% group_by(sample_id) %>% summarize(count = n()) 
     
-    # Take ceiling if downsampling to be conservative
+    # Downsample if one donor makes up more than 50% (rounding up to exclude border cases) of the pool
     if (max(caa_summary$count) <= round(ceiling(total_pool/2))) {
       new_caa <- c(new_caa, rownames(mg2)[mg2$caa_merged == paste0("A", region, "_new")])
       old_caa <- c(old_caa, rownames(mg2)[mg2$caa_merged == paste0("NMA22.A", region)])
@@ -262,7 +262,7 @@ for (region in c(1, 3, 4, 9)) {
     total_pool <- sum(mg4$caa_merged %in% c(paste0("A", region, "_new"), paste0("NMA22.A", region))) 
     caa_summary <- mg4[mg4$caa_merged == paste0("A", region, "_new"),] %>% group_by(sample_id) %>% summarize(count = n()) 
     
-    # Take ceiling if downsampling to be conservative
+    # Downsample if one donor makes up more than 50% (rounding up to exclude border cases) of the pool
     if (max(caa_summary$count) <= round(ceiling(total_pool/2))) {
       new_caa <- c(new_caa, rownames(mg4)[mg4$caa_merged == paste0("A", region, "_new")])
       old_caa <- c(old_caa, rownames(mg4)[mg4$caa_merged == paste0("NMA22.A", region)])

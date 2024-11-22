@@ -64,7 +64,7 @@ for (region in c(1, 3, 4, 9)) {
     total_pool <- sum(meta$caa_merged %in% c(paste0("A", region, "_new"), paste0("NMA22.A", region))) 
     caa_summary <- meta[meta$caa_merged == paste0("A", region, "_new"),] %>% group_by(sample_id) %>% summarize(count = n()) 
     
-    # Take ceiling if downsampling to be conservative
+    # Downsample if one donor makes up more than 50% (rounding up to exclude border cases) of the pool
     if (max(caa_summary$count) <= round(ceiling(total_pool/2))) {
       new_caa <- c(new_caa, rownames(meta)[meta$caa_merged == paste0("A", region, "_new")])
       old_caa <- c(old_caa, rownames(meta)[meta$caa_merged == paste0("NMA22.A", region)])

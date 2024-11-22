@@ -93,7 +93,7 @@ for (type in unique(s$cell_type_de)) {
       total_pool <- sum(meta$caa_merged %in% c(paste0(region, "_new"), paste0("NMA22.300.", region)))
       caa_summary <- meta[meta$caa_merged == paste0(region, "_new"),] %>% group_by(sample_merged) %>% summarize(count = n()) 
       
-      # Take ceiling if downsampling to be conservative
+      # Downsample if one donor makes up more than 50% (rounding up to exclude border cases) of the pool
       if (max(caa_summary$count) <= round(ceiling(total_pool/2))) {
         new_caa <- c(new_caa, rownames(meta)[meta$caa_merged == paste0(region, "_new")])
         old_caa <- c(old_caa, rownames(meta)[meta$caa_merged == paste0("NMA22.300.", region)])
@@ -133,7 +133,7 @@ for (type in unique(s$cell_type_de)) {
       # Set uniform target
       target <- 3000
       
-      # Calculate cells to remove
+      # Calculate cells to remove for CAA
       z <- sum(meta$caa_merged_total == paste0("A", region)) - target
       
       # Calculate target cells per donor
