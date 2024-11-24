@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Preprocess Space Ranger output with Seurat
+# Summary: Preprocess Space Ranger output for AN1792 with Seurat
 #
 #-------------------------------------------------------------------------------
 
@@ -29,9 +29,7 @@ output_folder <- "/path/to/preprocessing/folder"
 # Initialize list for sample objects
 seurat_objects <- list()
 
-# Preprocess cohort 1 samples
-
-# Define paths to sample-level Space Ranger output 
+# Define paths to sample-level Space Ranger output for original cohort
 all_samples <- list.dirs(paste0(input_folder, "/cohort_1_data"), recursive = FALSE)
 
 # Initialize Seurat objects for each sample
@@ -75,9 +73,7 @@ for (cur_sample in all_samples) {
   
 }
 
-# Preprocess cohort 6 samples
-
-# Define paths to sample-level Space Ranger output 
+# Define paths to sample-level Space Ranger output for additional NNC samples
 all_samples <- list.dirs(paste0(input_folder, "/cohort_6_data"), recursive = FALSE)
 
 # Initialize Seurat objects for each sample
@@ -119,7 +115,7 @@ for (cur_sample in all_samples) {
   i <- i + 1
 }
 
-# Merge cohort 1 and cohort 6 samples
+# Merge all samples
 all_samples_seurat <- merge(seurat_objects[[1]], seurat_objects[2:length(seurat_objects)], project = "cohort_1_all", merge.data = TRUE)
 
 # Save merged Seurat object

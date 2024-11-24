@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Pre-DoubletFinder QC filtering with Seurat
+# Summary: Pre-DoubletFinder QC filtering for AN1792 with Seurat
 #
 #-------------------------------------------------------------------------------
 

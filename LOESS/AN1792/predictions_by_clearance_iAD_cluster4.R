@@ -42,12 +42,11 @@ clusters$gene <- row.names(clusters)
 clust_genes <- clusters$gene[clusters$nclust_12 == 4]
 clust_genes[grep("^KRTAP|^DOCK", clust_genes)] <- str_replace(clust_genes[grep("^KRTAP|^DOCK", clust_genes)], "\\.", "-")
 
-# Load integrated cohort 1 Seurat object
-s <- readRDS("/path/to/integrated/cohort1/object.rds")
+# Load integrated AN1792 Seurat object
+s <- readRDS("/path/to/integrated/AN1792/object.rds")
 
-# Filter for amyloid-rich spots and first + second order neighbors in gray matter for iAD and nAD, excluding vascular amyloid rich spots + neighbors
-s <- subset(s, cortical_amyloid_neighbor_broad %in% c("amyloid", "neighbor") & vessel_neighbor == "not_vessel" & manual_annotation != "white" &
-              condition %in% c("iAD", "nAD"))
+# Subset for iAD and nAD cortical amyloid-rich spots and first + second order neighbors in gray matter
+s <- subset(s, amyloid_neighbor_final %in% c("amyloid", "first_neighbor", "second_neighbor") & manual_annotation != "white" & condition %in% c("iAD", "nAD"))
 gc()
 
 # Recorrect SCT data 

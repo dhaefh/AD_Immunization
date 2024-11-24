@@ -28,22 +28,8 @@ suppressMessages ({
 output_dir <- "/path/to/qc/barplots/"
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
-# Load integrated cohort 5/7/8 Seurat object
-s <- readRDS("/path/to/integrated/cohort578/object.rds")
-
-# Define condition groups
-s$group <- NA
-s$group[grep("\\.B", s$sample_id)] <- "LCMB"
-s$group[grep("\\.A|^A", s$sample_id)] <- "CAA"
-
-# Define filter operator 
-`%notin%` <- Negate(`%in%`)
-
-# Define variable for brain region
-s@meta.data <- s@meta.data %>% mutate(region = case_when(substr(s$sample_id, nchar(s$sample_id), nchar(s$sample_id)) == 1 ~ "FCX",
-                                                         substr(s$sample_id, nchar(s$sample_id), nchar(s$sample_id)) == 3 ~ "TCX",
-                                                         substr(s$sample_id, nchar(s$sample_id), nchar(s$sample_id)) == 4 ~ "PCX",
-                                                         substr(s$sample_id, nchar(s$sample_id), nchar(s$sample_id)) == 9 ~ "HIPP"))
+# Load integrated lecanemab Seurat object
+s <- readRDS("/path/to/integrated/lecanemab/object.rds")
 
 # Define broad donor variable
 s$donor <- NA
@@ -51,13 +37,13 @@ s$donor[grep("^A14.193", s$sample_id)] <- "A14.193"
 s$donor[grep("^A11.170", s$sample_id)] <- "A11.170"
 s$donor[grep("^NMA22.A", s$sample_id)] <- "NMA22.A"
 s$donor[grep("^NMA22.B", s$sample_id)] <- "NMA22.B"
-print(unique(s@meta.data[,c("group", "region", "sample_id", "donor")]))
+print(unique(s@meta.data[,c("condition", "region", "sample_id", "donor")]))
 
 # Extract meta data
 data <- s@meta.data
 
 # Calculate average MT% and nFeatures per donor per region 
-data <- data %>% dplyr::group_by(group, donor, region) %>% dplyr::summarize(mt = mean(percent.mt), nfeat = mean(nFeature_Spatial))
+data <- data %>% dplyr::group_by(condition, donor, region) %>% dplyr::summarize(mt = mean(percent.mt), nfeat = mean(nFeature_Spatial))
 
 # Set factor levels for region and donor
 data$region <- factor(data$region, levels = c("FCX", "TCX", "PCX", "HIPP"))
@@ -96,9 +82,9 @@ dev.off()
 stats <- data.frame() 
 for (region in levels(data$region)) {
   cur_data <- data[data$region == region,]
-  exact <- stats::wilcox.test(x = cur_data$mt[cur_data$group == "LCMB"], y = cur_data$mt[cur_data$group == "CAA"],
+  exact <- stats::wilcox.test(x = cur_data$mt[cur_data$condition == "LCMB"], y = cur_data$mt[cur_data$condition == "CAA"],
                               alternative = "two.sided", paired = FALSE, exact = TRUE, correct = FALSE)
-  adj <- stats::wilcox.test(x = cur_data$mt[cur_data$group == "LCMB"], y = cur_data$mt[cur_data$group == "CAA"],
+  adj <- stats::wilcox.test(x = cur_data$mt[cur_data$condition == "LCMB"], y = cur_data$mt[cur_data$condition == "CAA"],
                             alternative = "two.sided", paired = FALSE, exact = FALSE, correct = TRUE)
   print(exact$statistic == adj$statistic)
   row <- data.frame(region = region, w_stat = exact$statistic, p_exact = exact$p.value, p_corrected = adj$p.value)
@@ -135,9 +121,9 @@ dev.off()
 stats <- data.frame() 
 for (region in levels(data$region)) {
   cur_data <- data[data$region == region,]
-  exact <- stats::wilcox.test(x = cur_data$nfeat[cur_data$group == "LCMB"], y = cur_data$nfeat[cur_data$group == "CAA"],
+  exact <- stats::wilcox.test(x = cur_data$nfeat[cur_data$condition == "LCMB"], y = cur_data$nfeat[cur_data$condition == "CAA"],
                               alternative = "two.sided", paired = FALSE, exact = TRUE, correct = FALSE)
-  adj <- stats::wilcox.test(x = cur_data$nfeat[cur_data$group == "LCMB"], y = cur_data$nfeat[cur_data$group == "CAA"],
+  adj <- stats::wilcox.test(x = cur_data$nfeat[cur_data$condition == "LCMB"], y = cur_data$nfeat[cur_data$condition == "CAA"],
                             alternative = "two.sided", paired = FALSE, exact = FALSE, correct = TRUE)
   print(exact$statistic == adj$statistic)
   row <- data.frame(region = region, w_stat = exact$statistic, p_exact = exact$p.value, p_corrected = adj$p.value)

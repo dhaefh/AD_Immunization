@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: QC filtering with Seurat
+# Summary: QC filtering for AN1792 with Seurat
 #
 #-------------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ rownames(cohort_1_metric_df) <- cohort_1_metric_df[["sample_id"]]
 
 QC_per_sample_metric_df <- rbind(cohort_1_metric_df, cohort_6_metric_df)
 
-# Initialize variable for per-sample QC stats
+# Initialize per-sample QC stats
 sample_qc_stats <- NULL
 
 # Load preprocessed Seurat object
@@ -72,7 +72,7 @@ for (cur_sample in names(s_list)) {
   
   cur_s <- s_list[[cur_sample]]
   
-  # Get UMI and nFeature thresholds for current sample
+  # Extract UMI and nFeature thresholds for current sample
   cur_umi_min_cutoff <- QC_per_sample_metric_df[cur_sample, "min-UMIs-per-barcode"]
   cur_umi_max_cutoff <- QC_per_sample_metric_df[cur_sample, "max-UMIs-per-barcode"]
   cur_nfeature_min_cutoff <- QC_per_sample_metric_df[cur_sample, "min-genes-per-barcode"]
@@ -102,7 +102,6 @@ for (cur_sample in names(s_list)) {
   max_col_idx <- max(cur_s$array_col)
   min_row_idx <- min(cur_s$array_row)
   min_col_idx <- min(cur_s$array_col)
-  
   spots_to_discard_df <- cur_s@meta.data[which((cur_s$array_col==min_col_idx) | (cur_s$array_col==max_col_idx) | 
                                                  (cur_s$array_row==max_row_idx) | (cur_s$array_row==min_row_idx)),]
   spots_to_discard <- spots_to_discard_df|>rownames()
@@ -120,6 +119,7 @@ for (cur_sample in names(s_list)) {
   # Get number of spots removed based on MT %
   cur_mt_spots <- pre_MT - post_MT
   
+  # Update object list
   objects_post_qc <- c(objects_post_qc, cur_s)
   
   # Update QC stats table

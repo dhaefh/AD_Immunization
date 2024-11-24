@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Doublet detection with DoubletFinder
+# Summary: Doublet detection for AN1792 with DoubletFinder 
 #
 #-------------------------------------------------------------------------------
 

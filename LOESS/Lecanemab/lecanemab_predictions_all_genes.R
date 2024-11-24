@@ -36,19 +36,13 @@ output_folder <- "/path/to/lecanemab/loess/data/"
 # Define filter operator 
 `%notin%` <- Negate(`%in%`)
 
-# Load integrated cohort 5/7/8 Seurat object
-s <- readRDS("/path/to/integrated/cohort578/object.rds")
+# Load integrated lecanemab Seurat object
+s <- readRDS("/path/to/integrated/lecanemab/object.rds")
 
-# Filter for amyloid-rich spots and first + second order neighbors in gray matter, excluding vascular amyloid rich spots + neighbors
+# Filter for amyloid-rich spots and first + second order neighbors in gray matter
 gray_layers <- unique(s$manual_layer[grep("gray", s$manual_layer)])
-s <- subset(s, cortical_amyloid_neighbor_broad %in% c("amyloid", "neighbor") & vessel_neighbor == "not_vessel" & manual_layer %in% gray_layers)
+s <- subset(s, amyloid_neighbor_final %in% c("amyloid", "first_neighbor", "second_neighbor") & manual_layer %in% gray_layers)
 gc()
-
-# Define condition variable
-s$condition <- NA
-s$condition[grep("\\.B", s$sample_id)] <- "LCMB"
-s$condition[grep("\\.A|^A", s$sample_id)] <- "CAA"
-print(unique(s@meta.data[,c("sample_id", "condition")]))
 
 # Recorrect SCT data 
 for (name in names(s@assays$SCT@SCTModel.list)) {

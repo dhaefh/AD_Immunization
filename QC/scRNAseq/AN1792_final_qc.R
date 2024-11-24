@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Remove doublets and create post-QC Seurat object
+# Summary: Remove doublets and create post-QC Seurat object for AN1792
 #
 #-------------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ for (object in objects) {
   i <- i + 1
 }
 
-# Manually combine raw counts and meta data from all samples (merge function takes too long for this many samples)
+# Manually combine raw counts and meta data from all samples (more efficient than merge() for number of samples)
 s <- s_list[[1]]
 names(s@assays$RNA@layers)[grep("^counts", names(s@assays$RNA@layers))] <- "counts"
 counts <- GetAssayData(s, assay = "RNA", layer = "counts")

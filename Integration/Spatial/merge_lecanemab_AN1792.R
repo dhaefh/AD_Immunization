@@ -26,9 +26,9 @@ suppressMessages ({
 # Define output folder 
 output_folder <- "/path/to/all/cohorts/integration/output/folder/"
 
-# Load integrated objects for cohort 1 and cohort 5/7/8 
-cohort1 <- readRDS("/path/to/cohort1/integrated/object.rds")
-cohort578 <- readRDS("/path/to/cohort578/integrated/object.rds")
+# Load integrated objects for AN1792 and lecanemab
+cohort1 <- readRDS("/path/to/AN1792/integrated/object.rds")
+cohort578 <- readRDS("/path/to/lecanemab/integrated/object.rds")
 
 # Keep only raw counts in each object
 DefaultAssay(cohort1) <- "Spatial"

@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Remove background contamination with SoupX 
+# Summary: Remove background contamination for lecanemab with SoupX 
 #
 #-------------------------------------------------------------------------------
 

@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: QC filtering with Seurat
+# Summary: QC filtering for additional lecanemab nAD samples with Seurat
 #
 #-------------------------------------------------------------------------------
 
@@ -87,7 +87,6 @@ for (cur_sample in names(s_list)) {
   max_col_idx <- max(cur_s$array_col)
   min_row_idx <- min(cur_s$array_row)
   min_col_idx <- min(cur_s$array_col)
-  
   spots_to_discard_df <- cur_s@meta.data[which((cur_s$array_col==min_col_idx) | (cur_s$array_col==max_col_idx) | 
                                                  (cur_s$array_row==max_row_idx) | (cur_s$array_row==min_row_idx)),]
   spots_to_discard <- spots_to_discard_df|>rownames()
@@ -96,7 +95,7 @@ for (cur_sample in names(s_list)) {
   # Get number of edge spots removed
   cur_edge_spots <- length(spots_to_discard)
   
-  # Remove spots based on MT %
+  # Filter using MT % thresholds (30% for HIPP, 20% for all other regions)
   cur_s[["percent.mt"]] <- PercentageFeatureSet(cur_s, pattern = "^MT-", assay = 'Spatial')
   pre_MT <- nrow(cur_s@meta.data)
   if (cur_sample %in% c("A14.193.9", "A11.170.9")) {
@@ -105,13 +104,12 @@ for (cur_sample in names(s_list)) {
   } else {
     cur_s <- subset(cur_s, subset = percent.mt < 20)
   }
-  
   post_MT <- nrow(cur_s@meta.data)
   
   # Get number of spots removed based on MT %
   cur_mt_spots <- pre_MT - post_MT
   
-  # Update post-QC object list
+  # Update object list
   objects_post_qc <- c(objects_post_qc, cur_s)
   
   # Form QC tables
@@ -147,7 +145,7 @@ s[['Spatial']] <- split(s[['Spatial']], f = s$sample_id)
 # Save object
 saveRDS(s, file = paste0(output_folder, "/s_post_qc.rds"))
 
-# Subset protein data to post-QC spots
+# Filter protein object to post-QC spots
 pro <- readRDS("/path/to/preprocessed/protein/object.rds")
 pro <- subset(pro, cells = rownames(s@meta.data))
 saveRDS(pro, "/path/to/post/qc/protein/object.rds")

@@ -24,29 +24,23 @@ suppressMessages ({
 # Load all-cohort integrated object 
 s <- readRDS("/path/to/integrated/all/cohorts/object.rds")
 
-# Load cohort 5/7/8 data
-cohort578 <- readRDS("/path/to/cohort578/integrated/object.rds")
+# Load lecanemab data
+cohort578 <- readRDS("/path/to/lecanemab/integrated/object.rds")
 cohort578 <- cohort578@meta.data
 gc()
 
-# Load cohort 1 data
-cohort1 <- readRDS("/path/to/cohort1/integrated/object.rds")
+# Load AN1792 data
+cohort1 <- readRDS("/path/to/AN1792/integrated/object.rds")
 cohort1 <- cohort1@meta.data
 gc()
 
-# Define condition variable for cohort 5/7/8
-cohort578$condition <- NA
-cohort578$condition[grep("^A14|^A11|^NMA22.A", cohort578$sample_id)] <- "CAA"
-cohort578$condition[grep("^NMA22.B", cohort578$sample_id)] <- "LCMB"
-print(unique(cohort578[,c("sample_id", "condition")]))
-
 # Define gray matter amyloid enrichment for both groups
 cohort578$gray_amyloid <- "not_rich"
-cohort578$gray_amyloid[cohort578$cortical_amyloid > 183 & cohort578$vascular_amyloid == 0] <- "rich" # All spots with cortical amyloid density > 183 and vascular amyloid density = 0
-cohort578$gray_amyloid[-grep("^gray", cohort578$manual_layer)] <- "not_rich" # Exclude anything not in gray matter
+cohort578$gray_amyloid[cohort578$amyloid_neighbor_final == "amyloid"] <- "rich" 
+cohort578$gray_amyloid[-grep("^gray", cohort578$manual_layer)] <- "not_rich"
 cohort1$gray_amyloid <- "not_rich"
-cohort1$gray_amyloid[cohort1$amyloid_filter == "include" & cohort1$amyloid_fluo > 183 & cohort1$vessel_neighbor == "not_vessel"] <- "rich" # Amyloid "include", amyloid density > 183, exclude vascular amyloid + neighbors
-cohort1$gray_amyloid[-grep("^gray", cohort1$manual_annotation)] <- "not_rich" # Exclude anything not in gray matter
+cohort1$gray_amyloid[cohort1$amyloid_neighbor_final == "amyloid"] <- "rich"
+cohort1$gray_amyloid[-grep("^gray", cohort1$manual_annotation)] <- "not_rich"
 
 # Combine meta data
 add_meta <- data.frame(condition = c(cohort1$condition, cohort578$condition), condition_clearance = c(cohort1$condition_clearance, cohort578$condition),

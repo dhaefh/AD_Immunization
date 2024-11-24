@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: QC filtering with Seurat
+# Summary: QC filtering for lecanemab with Seurat
 #
 #-------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ QC_per_sample_metric_df <- readxl::read_xlsx(QC_per_sample_metric_file)|>as.data
 QC_per_sample_metric_df[["sample_id"]] <- sapply(QC_per_sample_metric_df[["file-name"]], function(x){str_replace_all(x,"-", ".")})
 rownames(QC_per_sample_metric_df) <- QC_per_sample_metric_df[["sample_id"]]
 
-# Initialize variable for per-sample QC stats
+# Initialize per-sample QC stats
 sample_qc_stats <- NULL
 
 # Load preprocessed Seurat object
@@ -91,7 +91,6 @@ for (cur_sample in names(s_list)) {
   max_col_idx <- max(cur_s$array_col)
   min_row_idx <- min(cur_s$array_row)
   min_col_idx <- min(cur_s$array_col)
-  
   spots_to_discard_df <- cur_s@meta.data[which((cur_s$array_col==min_col_idx) | (cur_s$array_col==max_col_idx) | 
                                                  (cur_s$array_row==max_row_idx) | (cur_s$array_row==min_row_idx)),]
   spots_to_discard <- spots_to_discard_df|>rownames()
@@ -100,22 +99,20 @@ for (cur_sample in names(s_list)) {
   # Get number of edge spots removed
   cur_edge_spots <- length(spots_to_discard)
   
-  # Remove spots based on MT %
+  # Filter using MT % thresholds (30% for HIPP, 20% for all other regions)
   cur_s[["percent.mt"]] <- PercentageFeatureSet(cur_s, pattern = "^MT-", assay = 'Spatial')
   pre_MT <- nrow(cur_s@meta.data)
-  
-  # Sample-specific MT thresholds
   if (unique(cur_s@meta.data$sample_id %in% c("NMA22.A9", "NMA22.B9"))) {
     cur_s <- subset(cur_s, subset = percent.mt < 30)
   } else {
     cur_s <- subset(cur_s, subset = percent.mt < 20)
   }
-  
   post_MT <- nrow(cur_s@meta.data)
   
   # Get number of spots removed based on MT %
   cur_mt_spots <- pre_MT - post_MT
   
+  # Update object list
   post_qc <- c(post_qc, cur_s)
   
   # Update QC stats table
@@ -145,10 +142,10 @@ write.csv(sample_qc_stats, sample_QC_stats_out_file, row.names = FALSE, quote = 
 # Merge post-QC sample objects
 all_seurat <- merge(post_qc[[1]], post_qc[2:length(post_qc)], merge.data = TRUE)
 
-# Filter protein objects to post-QC spots
-pro_filtered <- readRDS(glue("{prev_out_dir}/all_samples_01_pro_filtered.rds"))
-pro_filtered <- subset(pro_filtered, sample_barcode %in% all_seurat@meta.data$sample_barcode)
+# Filter protein object to post-QC spots
+pro <- readRDS("/path/to/preprocessed/protein/object.rds")
+pro <- subset(pro, sample_barcode %in% all_seurat@meta.data$sample_barcode)
 
 # Save objects
 saveRDS(all_seurat, file = glue("{objects_out_dir}/all_samples_02_rna.rds"))
-saveRDS(pro_filtered, file = glue("{objects_out_dir}/all_samples_02_pro_filtered.rds"))
+saveRDS(pro, file = "/path/to/post/qc/protein/object.rds")

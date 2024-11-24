@@ -19,7 +19,7 @@ suppressMessages ({
 })
 
 # Define output folder 
-output_folder <- "/path/to/cohort578/integration/output/folder/"
+output_folder <- "/path/to/lecanemab/integration/output/folder/"
 
 # Load merged post-QC Seurat object 
 s <- readRDS(paste0(output_folder, "rna_merged_for_integration.rds"))

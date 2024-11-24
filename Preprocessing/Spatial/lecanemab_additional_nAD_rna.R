@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Preprocess Space Ranger output with Seurat
+# Summary: Preprocess Space Ranger output for additional lecanemab nAD samples with Seurat
 #
 #-------------------------------------------------------------------------------
 

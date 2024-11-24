@@ -32,13 +32,7 @@ dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 s <- readRDS("/path/to/integrated/scRNAseq/object.rds")
 
 # Remove AN1792 samples
-s@meta.data$group <- NA
-s$group[grep("^102", s$sample_merged)] <- "AN1792"
-s$group[grep("\\.B", s$sample_merged)] <- "LCMB"
-s$group[grep("\\.A", s$sample_merged)] <- "CAA"
-
-# Remove AN1792 samples
-s <- subset(s, group != "AN1792")
+s <- subset(s, condition != "AN1792")
 gc()
 
 # Define variable for brain region
@@ -58,7 +52,7 @@ s$donor[grep("^NMA22.205.B", s$sample_merged)] <- "NMA22.B"
 data <- s@meta.data
 
 # Calculate average MT% and nFeatures per donor per region 
-data <- data %>% dplyr::group_by(group, donor, region) %>% dplyr::summarize(mt = mean(percent.mt), nfeat = mean(nFeature_RNA))
+data <- data %>% dplyr::group_by(condition, donor, region) %>% dplyr::summarize(mt = mean(percent.mt), nfeat = mean(nFeature_RNA))
 
 # Set factor levels for region and donor
 data$region <- factor(data$region, levels = c("FCX", "TCX", "PCX", "HIPP"))
@@ -97,9 +91,9 @@ dev.off()
 stats <- data.frame() 
 for (region in levels(data$region)) {
   cur_data <- data[data$region == region,]
-  exact <- stats::wilcox.test(x = cur_data$mt[cur_data$group == "LCMB"], y = cur_data$mt[cur_data$group == "CAA"],
+  exact <- stats::wilcox.test(x = cur_data$mt[cur_data$condition == "LCMB"], y = cur_data$mt[cur_data$condition == "CAA"],
                               alternative = "two.sided", paired = FALSE, exact = TRUE, correct = FALSE)
-  adj <- stats::wilcox.test(x = cur_data$mt[cur_data$group == "LCMB"], y = cur_data$mt[cur_data$group == "CAA"],
+  adj <- stats::wilcox.test(x = cur_data$mt[cur_data$condition == "LCMB"], y = cur_data$mt[cur_data$condition == "CAA"],
                             alternative = "two.sided", paired = FALSE, exact = FALSE, correct = TRUE)
   print(exact$statistic == adj$statistic)
   row <- data.frame(region = region, w_stat = exact$statistic, p_exact = exact$p.value, p_corrected = adj$p.value)
@@ -136,9 +130,9 @@ dev.off()
 stats <- data.frame() 
 for (region in levels(data$region)) {
   cur_data <- data[data$region == region,]
-  exact <- stats::wilcox.test(x = cur_data$nfeat[cur_data$group == "LCMB"], y = cur_data$nfeat[cur_data$group == "CAA"],
+  exact <- stats::wilcox.test(x = cur_data$nfeat[cur_data$condition == "LCMB"], y = cur_data$nfeat[cur_data$condition == "CAA"],
                               alternative = "two.sided", paired = FALSE, exact = TRUE, correct = FALSE)
-  adj <- stats::wilcox.test(x = cur_data$nfeat[cur_data$group == "LCMB"], y = cur_data$nfeat[cur_data$group == "CAA"],
+  adj <- stats::wilcox.test(x = cur_data$nfeat[cur_data$condition == "LCMB"], y = cur_data$nfeat[cur_data$condition == "CAA"],
                             alternative = "two.sided", paired = FALSE, exact = FALSE, correct = TRUE)
   print(exact$statistic == adj$statistic)
   row <- data.frame(region = region, w_stat = exact$statistic, p_exact = exact$p.value, p_corrected = adj$p.value)

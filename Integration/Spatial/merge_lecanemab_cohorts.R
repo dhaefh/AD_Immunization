@@ -25,12 +25,12 @@ suppressMessages ({
 })
 
 # Define output folder 
-output_folder <- "/path/to/cohort578/integration/output/folder/"
+output_folder <- "/path/to/lecanemab/integration/output/folder/"
 
 # Define filter operator
 `%notin%` <- Negate(`%in%`)
 
-# Load post-QC cohort 5/7 objects
+# Load post-QC objects for original lecanemab cohort
 rna57 <- readRDS("/path/to/post/qc/cohort57/rna/object.rds")
 pro57 <- readRDS("/path/to/post/qc/cohort57/protein/object.rds")
 
@@ -52,7 +52,7 @@ temp_rna57 <- NULL
 temo_pro57 <- NULL
 gc()
 
-# Load post-QC cohort 8 Seurat objects
+# Load post-QC objects for lecanemab additional nAD samples
 rna8 <- readRDS("/path/to/post/qc/cohort8/rna/object.rds")
 pro8 <- readRDS("/path/to/post/qc/cohort8/protein/object.rds")
 
