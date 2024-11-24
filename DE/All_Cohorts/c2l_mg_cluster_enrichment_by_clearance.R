@@ -35,8 +35,8 @@ gray_layers <- unique(s$manual_layer[grep("^gray", s$manual_layer)])
 s <- subset(s, manual_layer %in% gray_layers)
 gc()
 
-# Subset for cohort 1  
-cohort1 <- readRDS("/path/to/integrated/cohort1/object.rds")
+# Subset for AN1792 
+cohort1 <- readRDS("/path/to/integrated/AN1792/object.rds")
 cohort1 <- cohort1@meta.data
 gc()
 cohort1 <- cohort1[rownames(cohort1) %in% rownames(s@meta.data),]

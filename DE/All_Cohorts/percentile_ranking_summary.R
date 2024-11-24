@@ -26,15 +26,15 @@ dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 # Load DE results
 
 # Amyloid-rich gray matter
-an1792_gm_plaque <- read.csv("/path/to/cohort1/amyloid/mast/output/folder/iAD_vs_nAD/results/amyloid_rich.csv", row.names = 1)
-lcmb_gm_plaque <- read.csv("/path/to/cohort578/amyloid/all/regions/mast/output/folder/results/amyloid_rich.csv", row.names = 1)
+an1792_gm_plaque <- read.csv("/path/to/AN1792/amyloid/mast/output/folder/iAD_vs_nAD/results/amyloid_rich.csv", row.names = 1)
+lcmb_gm_plaque <- read.csv("/path/to/lecanemab/amyloid/all/regions/mast/output/folder/results/amyloid_rich.csv", row.names = 1)
 
 # Plaque cluster 6 
 an1792_plaque6 <- read.csv("/path/to/cluster6/mast/output/iAD_vs_nAD/results/plaque_6.csv", row.names = 1)
 lcmb_plaque6 <- read.csv("/path/to/cluster6/mast/output/LCMB_vs_CAA/results/plaque_6.csv", row.names = 1)
 
 # Microglia
-an1792_mg <- read.csv("/path/to/cohort1/general/celltype/deseq2/output/folder/iAD_vs_nAD/results/Microglia.csv", row.names = 1)
+an1792_mg <- read.csv("/path/to/AN1792/general/celltype/deseq2/output/folder/iAD_vs_nAD/results/Microglia.csv", row.names = 1)
 lcmb_mg <- read.csv("/path/to/scRNAseq/all/regions/celltype/mast/output/results/Mg.csv", row.names = 1)
 
 # C2L enriched microglia clusters in plaque niche

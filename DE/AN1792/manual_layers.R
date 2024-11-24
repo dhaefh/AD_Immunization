@@ -29,8 +29,8 @@ suppressMessages({
 output_folder <- "/path/to/manual/layer/deseq2/output/folder/"
 dir.create(output_folder, showWarnings = FALSE, recursive = TRUE)
 
-# Load integrated cohort 1 Seurat object
-s <- readRDS("/path/to/integrated/cohort1/object.rds")
+# Load integrated AN1792 Seurat object
+s <- readRDS("/path/to/integrated/AN1792/object.rds")
 
 # Combine counts across samples
 DefaultAssay(s) <- "Spatial"

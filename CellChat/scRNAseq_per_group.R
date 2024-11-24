@@ -21,18 +21,11 @@ suppressMessages({
 })
 
 # Define output folder
-output_folder <- "/projects/b1042/Gate_Lab/anne/AN1792_rebuttal/cellchat/scFRP_final/objects/"
+output_folder <- "/path/to/cellchat/objects/output/"
 dir.create(output_folder, showWarnings = FALSE, recursive = TRUE)
 
 # Load integrated scRNAseq Seurat object
 s <- readRDS("/path/to/integrated/scRNAseq/object.rds")
-
-# Define group variable
-s$group <- NA
-s$group[grep("^102", s$sample_merged)] <- "AN1792"
-s$group[grep("\\.B", s$sample_merged)] <- "LCMB"
-s$group[grep("\\.A", s$sample_merged)] <- "CAA"
-print(unique(s$group))
 
 # Define CellChat groups (broad cell types + microglia clusters) 
 s$cellchat_group <- s$merged_celltype_final
@@ -52,10 +45,10 @@ future::plan("multisession", workers = 4)
 options(future.globals.maxSize = 1000 * 1024^2)
 
 # Run CellChat for each group
-for (id in unique(s$group)) {
+for (id in unique(s$condition)) {
   
   # Subset for group
-  s_temp <- subset(s, group == id)
+  s_temp <- subset(s, condition == id)
   
   # Recorrect SCT data
   s_temp <- PrepSCTFindMarkers(s_temp)

@@ -26,8 +26,8 @@ suppressMessages({
 # Define output folder
 output_folder <- "/path/to/manual/layer/deseq2/output/folder/"
 
-# Load integrated cohort 5/7/8 Seurat object
-s <- readRDS("/path/to/integrated/cohort578/object.rds")
+# Load integrated lecanemab Seurat object
+s <- readRDS("/path/to/integrated/lecanemab/object.rds")
 
 # Subset for non-hippocampus
 s <- subset(s, region %in% c("FCX", "TCX", "PCX"))

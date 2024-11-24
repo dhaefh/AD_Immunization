@@ -29,8 +29,8 @@ suppressMessages({
 output_folder <- "/path/to/amyloid/all/regions/mast/output/folder/"
 dir.create(output_folder, showWarnings = FALSE, recursive = TRUE)
 
-# Load integrated cohort 5/7/8 Seurat object
-s <- readRDS("/path/to/integrated/cohort578/object.rds")
+# Load integrated lecanemab Seurat object
+s <- readRDS("/path/to/integrated/lecanemab/object.rds")
 
 # Subset for cortical amyloid-rich spots in gray matter 
 gray_layers <- unique(s$manual_layer[grep("gray", s$manual_layer)])

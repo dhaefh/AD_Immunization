@@ -34,12 +34,8 @@ dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 # Define filter operator
 `%notin%` <- Negate(`%in%`)
 
-# Load integrated cohort 1 Seurat object
-s <- readRDS("/path/to/integrated/cohort1/object.rds")
-
-# Add C2L enrichment data
-meta <- read.csv("/path/to/cohort1/c2l/metadata.csv", row.names = 1)
-s@meta.data <- cbind(s@meta.data, meta[,29:46])
+# Load integrated AN1792 Seurat object
+s <- readRDS("/path/to/integrated/AN1792/object.rds")
 
 # Filter for iAD microglia-enriched ST spots in gray matter 
 s <- subset(s, manual_annotation %notin% c("white", "meninges") & Microglia_enriched == 1 & condition == "iAD")
