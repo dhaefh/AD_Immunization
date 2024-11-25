@@ -33,9 +33,9 @@ output_folder = '/path/to/cell2location/mapping'
 # Define path to reference regression output folder
 ref_folder = '/path/to/snRNAseq/reference_signatures'
 
-# Load anndata objects for post-regression reference and cohort 1 spatial data
+# Load anndata objects for post-regression reference and AN1792 spatial data
 adata_ref = sc.read(f"{ref_folder}/adata_ref.h5ad")
-adata_vis = sc.read('/path/to/cohort_1.h5ad')
+adata_vis = sc.read('/path/to/AN1792/object.h5ad')
 
 # Define variable for gene names 
 adata_vis.var['SYMBOL'] = adata_vis.var.index

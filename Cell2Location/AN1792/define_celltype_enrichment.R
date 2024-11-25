@@ -25,8 +25,8 @@ suppressMessages ({
 # Define filter operator 
 `%notin%` <- Negate(`%in%`)
 
-# Load integrated cohort 1 Seurat and extract meta data
-s <- readRDS("/path/to/integrated/cohort1/object.rds")
+# Load integrated AN1792 Seurat and extract meta data
+s <- readRDS("/path/to/integrated/AN1792/object.rds")
 layers <- s@meta.data
 s <- NULL
 gc()

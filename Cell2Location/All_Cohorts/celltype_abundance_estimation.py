@@ -33,9 +33,9 @@ output_folder = '/path/to/cell2location/mapping'
 # Define path to reference regression output folder
 ref_folder = '/path/to/scRNAseq/reference_signatures'
 
-# Load post-regression reference data and Visium data
+# Load post-regression reference data and Visium data for gray matter in all cohorts
 adata_ref = sc.read(f"{ref_folder}/adata_ref.h5ad")
-adata_vis = sc.read('/path/to/all_cohorts_gray.h5ad')
+adata_vis = sc.read('/path/to/all/cohorts/gray/matter/object.h5ad')
 
 # Define variable for gene names 
 adata_vis.var['SYMBOL'] = adata_vis.var.index
