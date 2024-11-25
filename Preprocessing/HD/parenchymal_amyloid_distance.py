@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Calculate distance to nearest parenchymal amyloid for each nucleus
+# Summary: Calculate distance to nearest parenchymal Aß for each nucleus
 #
 #-------------------------------------------------------------------------------
 
@@ -101,7 +101,7 @@ def nearest_distance(gdf):
 # Calculate distance to ROI for each nucleus
 gdf_nuclei['roi_dist'] = gdf_nuclei.apply(nearest_distance, axis=1)
 
-# Save nuclei GDF with distance to parenchymal amyloid
+# Save nuclei GDF with distance to parenchymal Aß
 if os.path.exists(f"{output_dir}{sample}/gdf_roi_distance") == False:
   os.mkdir(f"{output_dir}{sample}/gdf_roi_distance")
 gdf_nuclei.to_file(f"{output_dir}{sample}/gdf_roi_distance/gdf.shp")

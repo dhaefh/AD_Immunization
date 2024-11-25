@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Differential expression with MAST for amyloid-rich gray matter
+# Summary: Differential expression with MAST for Aß-rich gray matter
 #
 #-------------------------------------------------------------------------------
 
@@ -32,12 +32,12 @@ dir.create(output_folder, showWarnings = FALSE, recursive = TRUE)
 # Load integrated lecanemab Seurat object
 s <- readRDS("/path/to/integrated/lecanemab/object.rds")
 
-# Subset for cortical amyloid-rich spots in gray matter 
+# Subset for Aß-rich spots in gray matter 
 gray_layers <- unique(s$manual_layer[grep("gray", s$manual_layer)])
 s <- subset(s, amyloid_neighbor_final == "amyloid" & manual_layer %in% gray_layers)
 gc()
 
-# Downsample spots with highest amyloid density
+# Downsample spots with highest Aß density
 
 # Ensure no CAA donor makes up more than 50% of the CAA group within each region
 s$caa_merged <- s$sample_id

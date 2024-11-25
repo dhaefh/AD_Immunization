@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Generate LOESS predictions for lecanemab gene expression based on amyloid density in the plaque niche
+# Summary: Generate LOESS predictions for lecanemab gene expression based on Aß density in the Aß plaque niche
 #
 #-------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ output_folder <- "/path/to/lecanemab/loess/data/"
 # Load integrated lecanemab Seurat object
 s <- readRDS("/path/to/integrated/lecanemab/object.rds")
 
-# Filter for amyloid-rich spots and first + second order neighbors in gray matter
+# Filter for Aß-rich spots and first + second order neighbors in gray matter
 gray_layers <- unique(s$manual_layer[grep("gray", s$manual_layer)])
 s <- subset(s, amyloid_neighbor_final %in% c("amyloid", "first_neighbor", "second_neighbor") & manual_layer %in% gray_layers)
 gc()
@@ -77,13 +77,13 @@ data$condition <- meta$condition
 # Define function to generate LOESS predictions 
 run_loess <- function(gene, data) {
   
-  # Extract gene expression and amyloid density from input data
+  # Extract gene expression and Aß density from input data
   data <- data[, c(gene, "amyloid")]
   
-  # Fit LOESS model with amyloid density as predictor for gene expression
+  # Fit LOESS model with Aß density as predictor for gene expression
   lo <- loess(get(gene) ~ amyloid, data)
   
-  # Generate LOESS predictions for a uniform grid of amyloid density values
+  # Generate LOESS predictions for a uniform grid of Aß density values
   lo_predict <- predict(lo, data.frame(amyloid = seq(min(data$amyloid), max(data$amyloid), 1))) %>% as.data.frame()
   colnames(lo_predict) <- gene
   

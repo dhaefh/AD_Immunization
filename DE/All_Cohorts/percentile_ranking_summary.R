@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Summarize amyloid and microglia associated genes for AN1792 and Lecanemab based on ranking within DE analyses
+# Summary: Summarize Aß and microglia associated genes for AN1792 and Lecanemab based on ranking within DE analyses
 #
 #-------------------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
 # Load DE results
 
-# Amyloid-rich gray matter
+# Aß-rich gray matter
 an1792_gm_plaque <- read.csv("/path/to/AN1792/amyloid/mast/output/folder/iAD_vs_nAD/results/amyloid_rich.csv", row.names = 1)
 lcmb_gm_plaque <- read.csv("/path/to/lecanemab/amyloid/all/regions/mast/output/folder/results/amyloid_rich.csv", row.names = 1)
 
@@ -127,7 +127,7 @@ gene_summary <- summary %>% dplyr::group_by(gene) %>% dplyr::summarize(n = n(), 
 gene_summary <- gene_summary %>% dplyr::arrange(desc(avg_rank))
 write.csv(gene_summary, paste0(output_dir, "mg_lcmb_ranking.csv"), row.names = FALSE)
 
-# AN1792 amyloid
+# AN1792 Aß
 summary <- data.frame()
 amyloid_results <- list(an1792_gm_plaque, an1792_plaque6)
 names(amyloid_results) <- c("AN1792 Plaque", "AN1792 Plaque-6")
@@ -169,7 +169,7 @@ gene_summary <- summary %>% dplyr::group_by(gene) %>% dplyr::summarize(n = n(), 
 gene_summary <- gene_summary %>% dplyr::arrange(desc(avg_rank))
 write.csv(gene_summary, paste0(output_dir, "amyloid_an1792_ranking.csv"), row.names = FALSE)
 
-# LCMB amyloid
+# LCMB Aß
 summary <- data.frame()
 amyloid_results <- list(lcmb_gm_plaque, lcmb_plaque6)
 names(amyloid_results) <- c("LCMB Plaque", "LCMB Plaque-6")
@@ -211,7 +211,7 @@ gene_summary <- summary %>% dplyr::group_by(gene) %>% dplyr::summarize(n = n(), 
 gene_summary <- gene_summary %>% dplyr::arrange(desc(avg_rank))
 write.csv(gene_summary, paste0(output_dir, "amyloid_lcmb_ranking.csv"), row.names = FALSE)
 
-# AN1792 microglia + amyloid
+# AN1792 microglia + Aß
 summary <- data.frame()
 combined_results <- list(an1792_mg, an1792_mg2, an1792_mg4, an1792_gm_plaque, an1792_plaque6)
 names(combined_results) <- c("AN1792 Mg", "AN1792 Mg-2", "AN1792 Mg-4", "AN1792 Plaque", "AN1792 Plaque-6")
@@ -253,7 +253,7 @@ gene_summary <- summary %>% dplyr::group_by(gene) %>% dplyr::summarize(n = n(), 
 gene_summary <- gene_summary %>% dplyr::arrange(desc(avg_rank))
 write.csv(gene_summary, paste0(output_dir, "combined_an1792_ranking.csv"), row.names = FALSE)
 
-# LCMB microglia + amyloid
+# LCMB microglia + Aß
 summary <- data.frame()
 combined_results <- list(lcmb_mg, lcmb_mg2, lcmb_mg4, lcmb_gm_plaque, lcmb_plaque6)
 names(combined_results) <- c("LCMB Mg", "LCMB Mg-2", "LCMB Mg-4", "LCMB Plaque", "LCMB Plaque-6")

@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Differential expression with MAST for amyloid-rich gray matter
+# Summary: Differential expression with MAST for Aß-rich gray matter
 #
 #-------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ s <- readRDS("/path/to/integrated/AN1792/object.rds")
 p_thresh <- 0.05
 fc_thresh <- log2(1.5) 
 
-# Filter for amyloid-rich spots in gray matter for iAD and nAD
+# Filter for Aß-rich spots in gray matter for iAD and nAD
 s <- subset(s, manual_annotation %notin% c("white", "meninges") & amyloid_neighbor_final == "amyloid" & condition %in% c("iAD", "nAD"))
 gc()
 
@@ -49,7 +49,7 @@ samples_keep <- as.character(summary$Var1[summary$Freq >= 2])
 s <- subset(s, sample_id %in% samples_keep)
 gc()
 
-# Downsample spots with highest amyloid density such that iAD and nAD each have 3000 spots
+# Downsample spots with highest Aß density such that iAD and nAD each have 3000 spots
 total_cells_keep <- c()
 meta <- s@meta.data
 target <- 3000

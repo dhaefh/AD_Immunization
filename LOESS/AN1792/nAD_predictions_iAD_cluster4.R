@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Generate LOESS predictions for nAD gene expression based on amyloid density in the plaque niche, for genes in iAD cluster 4
+# Summary: Generate LOESS predictions for nAD gene expression based on Aß density in the Aß plaque niche, for genes in iAD cluster 4
 #
 #-------------------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ clust_genes[grep("^KRTAP|^DOCK", clust_genes)] <- str_replace(clust_genes[grep("
 # Load integrated AN1792 Seurat object
 s <- readRDS("/path/to/integrated/AN1792/object.rds")
 
-# Subset for iAD and nAD cortical amyloid-rich spots and first + second order neighbors in gray matter
+# Subset for iAD and nAD cortical Aß-rich spots and first + second order neighbors in gray matter
 s <- subset(s, amyloid_neighbor_final %in% c("amyloid", "first_neighbor", "second_neighbor") & manual_annotation != "white" & condition %in% c("iAD", "nAD"))
 gc()
 
@@ -83,13 +83,13 @@ data$condition <- meta$condition
 # Define function to generate LOESS predictions 
 run_loess <- function(gene, data) {
   
-  # Extract gene expression and amyloid density from input data
+  # Extract gene expression and Aß density from input data
   data <- data[, c(gene, "amyloid")]
   
-  # Fit LOESS model with amyloid density as predictor for gene expression
+  # Fit LOESS model with Aß density as predictor for gene expression
   lo <- loess(get(gene) ~ amyloid, data)
   
-  # Generate LOESS predictions for a uniform grid of amyloid density values
+  # Generate LOESS predictions for a uniform grid of Aß density values
   lo_predict <- predict(lo, data.frame(amyloid = seq(min(data$amyloid), max(data$amyloid), 1))) %>% as.data.frame()
   colnames(lo_predict) <- gene
   

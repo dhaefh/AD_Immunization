@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Gene set enrichment analysis of DEGs in amyloid-rich gray matter with enrichR 
+# Summary: Gene set enrichment analysis of DEGs in Aß-rich gray matter with enrichR 
 #
 #-------------------------------------------------------------------------------
 

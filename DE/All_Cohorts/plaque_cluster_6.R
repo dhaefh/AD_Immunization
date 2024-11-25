@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Differential expression with MAST for plaque cluster 6
+# Summary: Differential expression with MAST for Aß cluster 6
 #
 #-------------------------------------------------------------------------------
 
@@ -32,12 +32,12 @@ dir.create(output_folder, showWarnings = FALSE, recursive = TRUE)
 # Define filter operator
 `%notin%` <- Negate(`%in%`)
 
-# Load all-cohorts gray matter amyloid-rich integrated Seurat object and subset for cluster 6
+# Load all-cohorts gray matter Aß-rich integrated Seurat object and subset for cluster 6
 s <- readRDS("/path/to/integrated/all/cohorts/amyloid/object.rds")
 s <- subset(s, plaque_cluster == "Aß-6")
 gc()
 
-# Downsample CAA and LCMB spots with highest amyloid density
+# Downsample CAA and LCMB spots with highest Aß density
 
 # Ensure no CAA donor makes up more than 50% of the CAA group within each region
 s$caa_merged <- s$sample_id

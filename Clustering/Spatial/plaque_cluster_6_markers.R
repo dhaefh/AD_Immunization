@@ -28,7 +28,7 @@ suppressMessages({
 output_dir <- "/path/to/cluster6/marker/output/"
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
-# Load all-cohorts gray matter amyloid-rich integrated Seurat object and recorrect SCT data
+# Load all-cohorts gray matter Aß-rich integrated Seurat object and recorrect SCT data
 s <- readRDS("/path/to/integrated/all/cohorts/amyloid/object.rds")
 DefaultAssay(s) <- "SCT"
 for (name in names(s@assays$SCT@SCTModel.list)) {

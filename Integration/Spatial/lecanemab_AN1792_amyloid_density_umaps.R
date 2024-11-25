@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Generate density UMAPs for lecanemab and AN1792 amyloid-rich spots in gray matter
+# Summary: Generate density UMAPs for lecanemab and AN1792 Aß-rich spots in gray matter
 #
 #-------------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ suppressMessages({
 # Define output folder 
 output_dir <- "/path/to/plot/folder/"
 
-# Load all-cohorts gray matter amyloid-rich integrated Seurat object 
+# Load all-cohorts gray matter Aß-rich integrated Seurat object 
 s <- readRDS("/path/to/integrated/all/cohorts/amyloid/object.rds")
 
 # Define function to calculate density

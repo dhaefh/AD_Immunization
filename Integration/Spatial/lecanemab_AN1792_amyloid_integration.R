@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Run SCTransform and perform Harmony integration in Seurat for lecanemab and AN1792 amyloid-rich spots in gray matter
+# Summary: Run SCTransform and perform Harmony integration in Seurat for lecanemab and AN1792 Aß-rich spots in gray matter
 #
 #-------------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ cohort1 <- readRDS("/path/to/AN1792/integrated/object.rds")
 cohort1 <- cohort1@meta.data
 gc()
 
-# Define gray matter amyloid enrichment for both groups
+# Define gray matter Aß enrichment for both groups
 cohort578$gray_amyloid <- "not_rich"
 cohort578$gray_amyloid[cohort578$amyloid_neighbor_final == "amyloid"] <- "rich" 
 cohort578$gray_amyloid[-grep("^gray", cohort578$manual_layer)] <- "not_rich"
@@ -48,7 +48,7 @@ add_meta <- data.frame(condition = c(cohort1$condition, cohort578$condition), co
 add_meta <- add_meta[rownames(s@meta.data),]
 s@meta.data <- cbind(s@meta.data, add_meta)
 
-# Subset for gray matter amyloid-rich spots, remove 2 donors with only 1 spot (error in SCTransform)
+# Subset for gray matter Aß-rich spots, remove 2 donors with only 1 spot (error in SCTransform)
 s <- subset(s, gray_amyloid == "rich" & condition %in% c("CAA", "LCMB", "iAD", "nAD") & sample_id %notin% c("AN1792.102.8", "AN1792.102.16"))
 gc()
 DefaultAssay(s) <- "Spatial"

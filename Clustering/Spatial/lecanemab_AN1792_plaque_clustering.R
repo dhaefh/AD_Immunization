@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Clustering of lecanemab and AN1792 amyloid-rich spots in gray matter
+# Summary: Clustering of lecanemab and AN1792 Aß-rich spots in gray matter
 #
 #-------------------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ suppressMessages ({
 # Define output folder for plots
 plot_dir <- "/path/to/cluster/plots/"
 
-# Load all-cohorts gray matter amyloid-rich integrated Seurat object 
+# Load all-cohorts gray matter Aß-rich integrated Seurat object 
 s <- readRDS("/path/to/integrated/all/cohorts/amyloid/object.rds")
 
 # Find clusters for a sequence of resolutions 

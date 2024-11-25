@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Differential expression with MAST for parenchymal amyloid associated myeloid cells
+# Summary: Differential expression with MAST for parenchymal Aß associated myeloid cells
 #
 #-------------------------------------------------------------------------------
 
@@ -34,10 +34,10 @@ dir.create(paste0(output_folder, "between_groups"), showWarnings = FALSE, recurs
 # Load integrated HD object
 s <- readRDS(paste0(hd_folder, "integration/data/s_integrated.rds"))
 
-# Define parenchymal amyloid distance threshold in pixels (threshold = 20 micron, there are ~0.50292 micron per pixel)
+# Define parenchymal Aß distance threshold in pixels (threshold = 20 micron, there are ~0.50292 micron per pixel)
 amyloid_thresh <- 20/0.50292
 
-# Identify parenchymal amyloid-associated myeloid cells in hippocampus 
+# Identify parenchymal Aß associated myeloid cells in hippocampus 
 s$keep <- FALSE
 s$keep[s$hippocampus == TRUE & s$parenchymal_amyloid_distance < amyloid_thresh & s$harmony_snn_res.0.2 == 5] <- TRUE
 s <- subset(s, keep == TRUE)

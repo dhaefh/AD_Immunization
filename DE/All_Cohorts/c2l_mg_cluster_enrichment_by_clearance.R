@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 #
 # Written by: Anne Forsyth
-# Summary: Differential expression with MAST for C2L enriched microglia clusters in plaque niche
+# Summary: Differential expression with MAST for C2L enriched microglia clusters in Aß plaque niche
 #
 #-------------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ cohort1 <- cohort1[rownames(cohort1) %in% rownames(s@meta.data),]
 s <- subset(s, cells = rownames(cohort1))
 gc()
 
-# Subset for cortical amyloid-rich spots and first + second order neighbors (note: already subset for gray matter)
+# Subset for Aß-rich spots and first + second order neighbors
 s <- subset(s, amyloid_neighbor_final %in% c("amyloid", "first_neighbor", "second_neighbor"))
 gc()
 
