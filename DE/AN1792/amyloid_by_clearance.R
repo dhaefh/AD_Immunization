@@ -54,7 +54,7 @@ colnames(n_cells)[3] <- "downsampled"
 cells_keep <- c()
 for (sample in unique(s$sample_id)) {
   meta <- s@meta.data[s$sample_id == sample,]
-  meta <- meta %>% dplyr::arrange(desc(amyloid_fluo))
+  meta <- meta %>% dplyr::arrange(desc(amyloid_density))
   cur_cells <- n_cells$downsampled[n_cells$sample_id == sample]
   cells <- rownames(meta)[1:cur_cells]
   cells_keep <- c(cells_keep, cells)

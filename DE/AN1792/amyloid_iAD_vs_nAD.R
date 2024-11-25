@@ -85,7 +85,7 @@ for (sample in unique(meta$sample_id[meta$condition == "iAD"])) {
   if (sample %in% positive_summary$sample_id) {
     cur_downsample <- positive_summary$n_sample[positive_summary$sample_id == sample]
     cur_meta <- meta[meta$sample_id == sample,]
-    cur_meta <- cur_meta %>% dplyr::arrange(desc(amyloid_fluo))
+    cur_meta <- cur_meta %>% dplyr::arrange(desc(amyloid_density))
     cells <- rownames(cur_meta)[1:cur_downsample]
   } else {
     cells <- rownames(meta)[meta$sample_id == sample]
@@ -128,7 +128,7 @@ for (sample in unique(meta$sample_id[meta$condition == "nAD"])) {
     
     cur_downsample <- positive_summary$n_sample[positive_summary$sample_id == sample]
     cur_meta <- meta[meta$sample_id == sample,]
-    cur_meta <- cur_meta %>% dplyr::arrange(desc(amyloid_fluo))
+    cur_meta <- cur_meta %>% dplyr::arrange(desc(amyloid_density))
     cells <- rownames(cur_meta)[1:cur_downsample]
     
   } else {

@@ -53,7 +53,7 @@ for (region in c(1, 3, 4, 9)) {
   # If old CAA donor has more spots, downsample to total new controls, otherwise ensure no new donors make up more than 50% of the total CAA pool
   if (sum(meta$caa_merged == paste0("NMA22.A", region)) > sum(meta$caa_merged == paste0("A", region, "_new"))) {
     cur_meta <- meta[meta$caa_merged == paste0("NMA22.A", region),]
-    cur_meta <- cur_meta %>% dplyr::arrange(desc(cortical_amyloid))
+    cur_meta <- cur_meta %>% dplyr::arrange(desc(amyloid_density))
     cur_downsample <- sum(meta$caa_merged == paste0("A", region, "_new"))
     cells <- rownames(cur_meta)[1:cur_downsample]
     old_caa <- c(old_caa, cells)
@@ -72,7 +72,7 @@ for (region in c(1, 3, 4, 9)) {
       sample <- caa_summary$sample_id[caa_summary$count > round(ceiling(total_pool/2))]
       n_cells <- sum(meta$caa_merged == paste0("NMA22.A", region) | (meta$caa_merged == paste0("A", region, "_new") & meta$sample_id != sample)) 
       cur_meta <- meta[meta$sample_id == sample,]
-      cur_meta <- cur_meta %>% dplyr::arrange(desc(cortical_amyloid))
+      cur_meta <- cur_meta %>% dplyr::arrange(desc(amyloid_density))
       cells <- rownames(cur_meta)[1:n_cells]
       new_caa <- c(new_caa, rownames(meta)[rownames(meta) %in% cells | (meta$caa_merged == paste0("A", region, "_new") & meta$sample_id != sample)])
       old_caa <- c(old_caa, rownames(meta)[meta$caa_merged == paste0("NMA22.A", region)])
@@ -172,7 +172,7 @@ for (region in c(1, 3, 4, 9)) {
         
         cur_downsample <- positive_summary$n_sample[positive_summary$sample_id == sample]
         cur_meta <- meta[meta$sample_id == sample,]
-        cur_meta <- cur_meta %>% dplyr::arrange(desc(cortical_amyloid))
+        cur_meta <- cur_meta %>% dplyr::arrange(desc(amyloid_density))
         cells <- rownames(cur_meta)[1:cur_downsample]
         
       } else {
@@ -193,7 +193,7 @@ for (region in c(1, 3, 4, 9)) {
       target <- 3000
     }
     cur_meta <- meta[meta$sample_id == paste0("NMA22.B", region),]
-    cur_meta <- cur_meta %>% dplyr::arrange(desc(cortical_amyloid))
+    cur_meta <- cur_meta %>% dplyr::arrange(desc(amyloid_density))
     cells_keep <- rownames(cur_meta)[1:target]
     cells_keep <- rownames(meta)[rownames(meta) %in% cells_keep | meta$caa_merged_total == paste0("A", region)] 
   } 
@@ -256,7 +256,7 @@ for (region in c(1, 3, 4, 9)) {
       if (sample %in% positive_summary$sample_id) {
         cur_downsample <- positive_summary$n_sample[positive_summary$sample_id == sample]
         cur_meta <- meta[meta$sample_id == sample,]
-        cur_meta <- cur_meta %>% dplyr::arrange(desc(cortical_amyloid))
+        cur_meta <- cur_meta %>% dplyr::arrange(desc(amyloid_density))
         cells <- rownames(cur_meta)[1:cur_downsample]
       } else {
         cells <- rownames(meta)[meta$sample_id == sample]
