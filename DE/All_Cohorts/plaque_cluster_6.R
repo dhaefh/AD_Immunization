@@ -334,14 +334,6 @@ for (name in names(s@assays$SCT@SCTModel.list)) {
   s@assays$SCT@SCTModel.list[[name]]@umi.assay <- 'Spatial'
 }
 
-# Define region variable
-s$region <- "FCX" # nAD and iAD are all FCX
-s$region[s$sample_id %in% paste0(c("A14.193.", "A11.170.", "NMA22.A", "NMA22.B"), 1)] <- "FCX"
-s$region[s$sample_id %in% paste0(c("A14.193.", "A11.170.", "NMA22.A", "NMA22.B"), 3)] <- "TCX"
-s$region[s$sample_id %in% paste0(c("A14.193.", "A11.170.", "NMA22.A", "NMA22.B"), 4)] <- "PCX"
-s$region[s$sample_id %in% paste0(c("A14.193.", "A11.170.", "NMA22.A", "NMA22.B"), 9)] <- "HIPP"
-print(unique(s@meta.data[,c("sample_id", "region")]))
-
 # Run MAST for each comparison
 for (comparison in c("iAD_vs_nAD", "LCMB_vs_CAA")) {
   
