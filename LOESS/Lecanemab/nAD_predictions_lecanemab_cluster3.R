@@ -78,7 +78,7 @@ data <- data.frame(data)
 data$row_name <- stri_replace_last_fixed(row.names(data), ".", "-")
 row.names(data) <- data$row_name
 print(sum(row.names(data) != row.names(meta)))
-data$amyloid <- meta$cortical_amyloid
+data$amyloid <- meta$amyloid_density
 data$condition <- meta$condition
 
 # Define function to generate LOESS predictions 
