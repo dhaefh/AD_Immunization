@@ -23,7 +23,7 @@ suppressMessages({
 # Load integrated scRNAseq Seurat object
 s <- readRDS("/path/to/integrated/scRNAseq/object.rds")
 
-# Subset for initially defined immune subtypes
+# Subset for initially defined immune subtypes (harmony resolution = 1, clusters 14, 15, 18, 26, 30)
 s <- subset(s, broad_anno_long %in% c("microglia/macrophage", "T lymphocyte", "monocyte"))
 DefaultAssay(s) <- "RNA"
 s <- DietSeurat(s, assays = "RNA")

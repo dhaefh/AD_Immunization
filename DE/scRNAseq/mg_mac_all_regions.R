@@ -37,14 +37,8 @@ s <- subset(s, cells = rownames(immune@meta.data))
 immune <- NULL
 gc()
 
-# Define group variable
-s@meta.data$group_de <- NA
-s$group_de[grep("^102", s$sample_merged)] <- "AN1792"
-s$group_de[grep("\\.B", s$sample_merged)] <- "LCMB"
-s$group_de[grep("\\.A", s$sample_merged)] <- "CAA"
-
 # Remove AN1792 samples
-s <- subset(s, group_de != "AN1792")
+s <- subset(s, condition != "AN1792")
 gc()
 
 # Format cell type names
@@ -67,7 +61,7 @@ for (type in unique(s$cell_type_de)) {
   meta <- s@meta.data[s$cell_type_de == type,]
   
   # Skip if either group is not present 
-  if (length(unique(meta$group_de)) != 2) {
+  if (length(unique(meta$condition)) != 2) {
     next
   }
   
@@ -109,7 +103,7 @@ for (type in unique(s$cell_type_de)) {
   }
   
   # Filter for downsampled controls
-  meta <- meta[rownames(meta) %in% c(old_caa, new_caa) | meta$group_de == "LCMB",]
+  meta <- meta[rownames(meta) %in% c(old_caa, new_caa) | meta$condition == "LCMB",]
   
   # Define variable for total CAA per region
   meta$caa_merged_total <- meta$caa_merged
@@ -407,12 +401,12 @@ gc()
 comparison <- "LCMB_vs_CAA"
 
 # Make group, sample and region factors
-s$group_de <- factor(s$group_de)
+s$condition <- factor(s$condition)
 s$sample_merged <- factor(s$sample_merged)
 s$region <- factor(s$region)
 
 # Set idents 
-Idents(s) <- "group_de"
+Idents(s) <- "condition"
 
 # Set default assay
 DefaultAssay(object = s) <- "SCT"
@@ -469,15 +463,15 @@ for (type in c("Mg", "Mac")) {
   sca <- FromMatrix(expressionmat, cdat, fdat, check_sanity = FALSE)
   
   # Set reference level for DE group 
-  group <- factor(colData(sca)$group_de)
+  group <- factor(colData(sca)$condition)
   group <- relevel(group, ident.1) 
-  colData(sca)$group_de <- group
+  colData(sca)$condition <- group
   
   tryCatch(
     {
       # Fit model and run LRT
-      zlm_group <- zlm(~ group_de + cdr_centered + region + (1 | sample_merged), sca, ebayes = FALSE, method = "glmer")
-      lrt_name <- paste0("group_de", ident.2)
+      zlm_group <- zlm(~ condition + cdr_centered + region + (1 | sample_merged), sca, ebayes = FALSE, method = "glmer")
+      lrt_name <- paste0("condition", ident.2)
       summary <- summary(zlm_group, doLRT = lrt_name) 
       
       # Extract hurdle p values
