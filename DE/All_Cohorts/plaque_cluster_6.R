@@ -29,9 +29,6 @@ suppressMessages({
 output_folder <- "/path/to/plaque6/mast/output/"
 dir.create(output_folder, showWarnings = FALSE, recursive = TRUE)
 
-# Define filter operator
-`%notin%` <- Negate(`%in%`)
-
 # Load all-cohorts gray matter Aß-rich integrated Seurat object and subset for cluster 6
 s <- readRDS("/path/to/integrated/all/cohorts/amyloid/object.rds")
 s <- subset(s, plaque_cluster == "Aß-6")
