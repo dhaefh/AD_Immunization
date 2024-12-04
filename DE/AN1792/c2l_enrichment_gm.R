@@ -92,9 +92,9 @@ for (comparison in comparisons) {
     # Extract raw counts
     counts <- GetAssayData(type_s, assay = "Spatial", layer = "counts")
     
-    # If comparing iAD-Ext or iAD-Lim, set idents to condition_clearance
+    # If comparing iAD-Ext or iAD-Lim, set idents to condition_residual_amyloid
     if ((ident.1 %in% c("ext", "lim")) | (ident.2 %in% c("ext", "lim"))) {
-      Idents(type_s) <- "condition_clearance"
+      Idents(type_s) <- "condition_residual_amyloid"
     } else {
       Idents(type_s) <- "condition"
     }
@@ -133,7 +133,7 @@ for (comparison in comparisons) {
     bulk <- t(rowsum(t(counts), group = colnames(counts)))
     
     # Subset metadata to have one row per sample and standardize continuous covariates
-    meta <- meta[,c('age', 'sex', 'sample_id', 'avg_feat', 'gDNA_percent', 'condition', 'condition_clearance')]
+    meta <- meta[,c('age', 'sex', 'sample_id', 'avg_feat', 'gDNA_percent', 'condition', 'condition_residual_amyloid')]
     meta <- unique(meta)
     meta$age_centered <- scale(meta$age)
     meta$feat_centered <- scale(meta$avg_feat)
@@ -148,7 +148,7 @@ for (comparison in comparisons) {
     
     # Update condition variable if comparing iAD-Ext or iAD-Lim
     if ((ident.1 %in% c("ext", "lim")) | (ident.2 %in% c("ext", "lim"))) {
-      meta$condition <- factor(meta$condition_clearance)
+      meta$condition <- factor(meta$condition_residual_amyloid)
     } else {
       meta$condition <- factor(meta$condition)
     }

@@ -78,7 +78,7 @@ data$row_name <- stri_replace_last_fixed(row.names(data), ".", "-")
 row.names(data) <- data$row_name
 print(sum(row.names(data) != row.names(meta)))
 data$amyloid <- meta$amyloid_density
-data$condition <- meta$condition_clearance
+data$condition <- meta$condition_residual_amyloid
 
 # Define function to generate LOESS predictions 
 run_loess <- function(gene, data) {

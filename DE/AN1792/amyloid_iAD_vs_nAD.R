@@ -191,9 +191,9 @@ for (comparison in comparisons) {
   ident.1 <- str_split_fixed(comparison, "_vs_", 2)[1]
   ident.2 <- str_split_fixed(comparison, "_vs_", 2)[2]
   
-  # If comparing iAD-Ext or iAD-Lim, set idents to condition_clearance
+  # If comparing iAD-Ext or iAD-Lim, set idents to condition_residual_amyloid
   if ((ident.1 %in% c("ext", "lim")) | (ident.2 %in% c("ext", "lim"))) {
-    Idents(s) <- "condition_clearance"
+    Idents(s) <- "condition_residual_amyloid"
   } else {
     Idents(s) <- "condition"
   }
@@ -221,7 +221,7 @@ for (comparison in comparisons) {
   
   # Update condition variable if comparing iAD-Ext or iAD-Lim
   if ((ident.1 %in% c("ext", "lim")) | (ident.2 %in% c("ext", "lim"))) {
-    cdat$condition <- cdat$condition_clearance
+    cdat$condition <- cdat$condition_residual_amyloid
   } 
   
   # Create SingleCellAssay object

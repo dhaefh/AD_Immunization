@@ -39,7 +39,7 @@ amyloid_thresh <- 20/0.50292
 
 # Identify parenchymal Aß associated myeloid cells in hippocampus 
 s$keep <- FALSE
-s$keep[s$hippocampus == TRUE & s$parenchymal_amyloid_distance < amyloid_thresh & s$cell_type == "myeloid"] <- TRUE
+s$keep[s$hippocampus == TRUE & s$parenchymal_amyloid_distance < amyloid_thresh & s$broad_celltype == "Myeloid"] <- TRUE
 s <- subset(s, keep == TRUE)
 table(s$sample_id)
 

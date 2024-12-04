@@ -43,7 +43,7 @@ cohort1$gray_amyloid[cohort1$amyloid_neighbor_final == "amyloid"] <- "rich"
 cohort1$gray_amyloid[-grep("^gray", cohort1$manual_annotation)] <- "not_rich"
 
 # Combine meta data
-add_meta <- data.frame(condition = c(cohort1$condition, cohort578$condition), condition_clearance = c(cohort1$condition_clearance, cohort578$condition),
+add_meta <- data.frame(condition = c(cohort1$condition, cohort578$condition), condition_clearance = c(cohort1$condition_residual_amyloid, cohort578$condition),
                        gray_amyloid = c(cohort1$gray_amyloid, cohort578$gray_amyloid), row.names = c(rownames(cohort1), rownames(cohort578)))
 add_meta <- add_meta[rownames(s@meta.data),]
 s@meta.data <- cbind(s@meta.data, add_meta)

@@ -59,7 +59,7 @@ df <- s@meta.data[s$Mg.2_enriched == 1 & s$condition %in% c("iAD", "nAD"),]
 # Downsample nAD
 
 # Calculate spots to remove
-target <- 3*sum(df$condition_clearance == "ext")
+target <- 3*sum(df$condition_residual_amyloid == "ext")
 z <- sum(df$condition == "nAD") - target
 
 # Calculate target spots per donor
@@ -103,10 +103,10 @@ df <- df[df$condition != "nAD" | rownames(df) %in% cells_keep,]
 mg2_keep <- rownames(df)
 
 # Generate summary table
-df <- df %>% dplyr::group_by(condition_clearance, sample_id) %>% dplyr::summarize(n_spots = n())
+df <- df %>% dplyr::group_by(condition_residual_amyloid, sample_id) %>% dplyr::summarize(n_spots = n())
 df$percent_of_group <- NA
-for (condition in unique(df$condition_clearance)) {
-  df$percent_of_group[df$condition_clearance == condition] <- df$n_spots[df$condition_clearance == condition]/sum(df$n_spots[df$condition_clearance == condition])
+for (condition in unique(df$condition_residual_amyloid)) {
+  df$percent_of_group[df$condition_residual_amyloid == condition] <- df$n_spots[df$condition_residual_amyloid == condition]/sum(df$n_spots[df$condition_residual_amyloid == condition])
 }
 write.csv(df, paste0(output_folder, "mg2_cohort1_by_clearance_summary.csv"), row.names = FALSE)
 
@@ -115,13 +115,13 @@ df <- s@meta.data[s$Mg.4_enriched == 1 & s$condition %in% c("iAD", "nAD"),]
 
 # Downsample 102.6
 set.seed(100)
-ext_keep <- sample(rownames(df)[df$sample_id == "AN1792.102.6"], sum(df$sample_id != "AN1792.102.6" & df$condition_clearance == "ext"), replace = FALSE)
+ext_keep <- sample(rownames(df)[df$sample_id == "AN1792.102.6"], sum(df$sample_id != "AN1792.102.6" & df$condition_residual_amyloid == "ext"), replace = FALSE)
 df <- df[df$sample_id != "AN1792.102.6" | rownames(df) %in% ext_keep,]
 
 # Downsample nAD
 
 # Calculate spots to remove
-target <- 3*sum(df$condition_clearance == "ext")
+target <- 3*sum(df$condition_residual_amyloid == "ext")
 z <- sum(df$condition == "nAD") - target
 
 # Calculate target spots per donor
@@ -165,13 +165,13 @@ df <- df[df$condition != "nAD" | rownames(df) %in% cells_keep,]
 
 # Calculate spots to remove
 target <- 3*sum(df$condition == "nAD")
-z <- sum(df$condition_clearance == "lim") - target
+z <- sum(df$condition_residual_amyloid == "lim") - target
 
 # Calculate target cells per donor
-target_per_donor <- round(target/length(unique(df$sample_id[df$condition_clearance == "lim"])))
+target_per_donor <- round(target/length(unique(df$sample_id[df$condition_residual_amyloid == "lim"])))
 
 # Calculate deviation from target per donor
-summary <- df[df$condition_clearance == "lim",] %>% dplyr::group_by(sample_id) %>% dplyr::summarize(count = n())
+summary <- df[df$condition_residual_amyloid == "lim",] %>% dplyr::group_by(sample_id) %>% dplyr::summarize(count = n())
 summary$deviation <- summary$count - target_per_donor
 
 # Arrange by decreasing deviation
@@ -184,7 +184,7 @@ positive_summary <- summary[summary$deviation > 0,]
 positive_summary$n_sample <- positive_summary$count
 positive_summary$n_sample[1] <- positive_summary$n_sample[1] - z
 cells_keep <- c()
-for (sample in unique(df$sample_id[df$condition_clearance == "lim"])) {
+for (sample in unique(df$sample_id[df$condition_residual_amyloid == "lim"])) {
   if (sample %in% positive_summary$sample_id) {
     cur_downsample <- positive_summary$n_sample[positive_summary$sample_id == sample]
     cur_meta <- df[df$sample_id == sample,]
@@ -197,16 +197,16 @@ for (sample in unique(df$sample_id[df$condition_clearance == "lim"])) {
 }
 
 # Subset for downsampled iAD-Lim
-df <- df[df$condition_clearance != "lim" | rownames(df) %in% cells_keep,]
+df <- df[df$condition_residual_amyloid != "lim" | rownames(df) %in% cells_keep,]
 
 # Define final downsampled Mg-4 spots
 mg4_keep <- rownames(df)
 
 # Generate summary table
-df <- df %>% dplyr::group_by(condition_clearance, sample_id) %>% dplyr::summarize(n_spots = n())
+df <- df %>% dplyr::group_by(condition_residual_amyloid, sample_id) %>% dplyr::summarize(n_spots = n())
 df$percent_of_group <- NA
-for (condition in unique(df$condition_clearance)) {
-  df$percent_of_group[df$condition_clearance == condition] <- df$n_spots[df$condition_clearance == condition]/sum(df$n_spots[df$condition_clearance == condition])
+for (condition in unique(df$condition_residual_amyloid)) {
+  df$percent_of_group[df$condition_residual_amyloid == condition] <- df$n_spots[df$condition_residual_amyloid == condition]/sum(df$n_spots[df$condition_residual_amyloid == condition])
 }
 write.csv(df, paste0(output_folder, "mg4_cohort1_by_clearance_summary.csv"), row.names = FALSE)
 
@@ -268,7 +268,7 @@ for (cluster in c("Mg_2", "Mg_4")) {
     ident.2 <- str_split_fixed(comparison, "_vs_", 2)[2]
     
     # Set idents
-    Idents(cur_s) <- "condition_clearance"
+    Idents(cur_s) <- "condition_residual_amyloid"
     
     # Calculate fold change and percent expression using SCT data
     LFC <- FoldChange(object = cur_s, ident.1 = ident.1, ident.2 = ident.2, fc.name = "avg_log2FC", base = 2,
@@ -295,7 +295,7 @@ for (cluster in c("Mg_2", "Mg_4")) {
     sca <- FromMatrix(expressionmat, cdat, fdat, check_sanity = FALSE)
     
     # Set reference level for condition
-    cond <- factor(colData(sca)$condition_clearance)
+    cond <- factor(colData(sca)$condition_residual_amyloid)
     cond <- relevel(cond, ident.1)
     colData(sca)$condition <- cond
     
