@@ -30,7 +30,7 @@ DefaultAssay(s) <- "SCT"
 s <- PrepSCTFindMarkers(s)
 
 # Assign temporary cluster variable 
-s$clusters <- s$merged_celltype_final
+s$clusters <- s$broad_celltype
 Idents(s) <- "clusters"
 
 # Find positive markers for each cluster 
