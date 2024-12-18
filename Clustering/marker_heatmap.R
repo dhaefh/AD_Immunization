@@ -95,9 +95,12 @@ for (cluster in levels(data$cluster)) {
   i <- i + 1
 }
 
+# Calculate color scale limit (max absolute expression)
+lim <- max(abs(data$expression))
+
 # Initialize heatmap
 plt <- ggplot(data, mapping = aes(x = x, y = y)) + geom_tile(aes(fill = expression), color = "white", linewidth = 0.5) +
-  scale_fill_gradientn(colours=c("#330099", "#99CCFF", "#FFFFCC", "#FFCC66", "#CC0000"))
+  scale_fill_gradientn(colours=c("#330099", "#99CCFF", "#FFFFCC", "#FFCC66", "#CC0000"), limits = c(-lim, lim))
 
 # Add dendrogram corresponding to genes - adjust xlim arguments based on number of clusters on x axis
 plt <- plt + ggdendroplot::geom_dendro(row_clust, pointing = "side", xlim=c(9.5, 10.5))
