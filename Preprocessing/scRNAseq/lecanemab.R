@@ -54,14 +54,14 @@ run_soupx <- function(dir) {
   seurat <- seurat %>% FindNeighbors(dims = 1:10) %>% FindClusters() 
   
   # Load in 10X data for SoupX 
-  toc = Seurat::Read10X(paste0(dir,"/count/sample_filtered_feature_bc_matrix"))
-  tod = Seurat::Read10X(paste0(dir,"/count/sample_raw_feature_bc_matrix"))
+  toc <- Seurat::Read10X(paste0(dir,"/count/sample_filtered_feature_bc_matrix"))
+  tod <- Seurat::Read10X(paste0(dir,"/count/sample_raw_feature_bc_matrix"))
   
   # Filter table of droplets (tod) so that it has same number of genes as table of counts (toc)
   tod <- tod[which(rownames(tod) %in% rownames(toc)),]
   
   # Create SoupX object (default calcSoupProfile = TRUE)
-  soupx = SoupChannel(tod, toc)
+  soupx <- SoupChannel(tod, toc)
   
   # Add cluster info to SoupX object
   soupx <- setClusters(soupx, setNames(seurat$seurat_clusters, colnames(seurat)))
