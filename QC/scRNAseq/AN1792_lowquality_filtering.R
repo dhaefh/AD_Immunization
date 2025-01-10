@@ -63,10 +63,8 @@ for (pool in list.files("/path/to/AN1792/SoupX/output")) {
   
   # Create Seurat objects for all samples
   seurat_object_list <- list()
-  j <- 1
   for (j in 1:length(soupx_sample_dirs)) {
     seurat_object_list[[j]] <- load_seurat(soupx_sample_dirs[j], samples[j], TRUE)
-    j <- j + 1
   }
   
   # Merge objects
