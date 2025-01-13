@@ -20,12 +20,12 @@ suppressMessages({
   library("Seurat")
 })
 
+# Define clustering resolution 
+res <- 1
+
 # Define output folder
 output_dir <- paste0("/path/to/clustering/output/harmony_", res, "/")
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
-
-# Define clustering resolution 
-res <- 1
 
 # Load integrated scRNAseq Seurat object and recorrect SCT data
 s <- readRDS("/path/to/integrated/scRNAseq/object.rds")
