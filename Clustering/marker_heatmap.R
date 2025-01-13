@@ -36,7 +36,7 @@ s <- PrepSCTFindMarkers(s)
 s$cluster <- s@meta.data[["<name of cluster column>"]]
 
 # Load FindMarkers output 
-markers <- read.csv("/path/to/markers.csv")
+all_markers <- read.csv("/path/to/markers.csv")
 
 # Define marker genes to plot
 marker_genes_to_plot <- c("<list of marker genes>")
