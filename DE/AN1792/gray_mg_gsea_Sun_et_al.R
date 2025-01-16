@@ -41,19 +41,19 @@ markers <- group_by(markers, state)
 de_folder <- "/path/to/gray/celltype/deseq2/output/folder/"
 ext_nAD <- read.csv(paste0(de_folder, "ext_vs_nAD/results/Microglia.csv"))
 iAD_nAD <- read.csv(paste0(de_folder, "iAD_vs_nAD/results/Microglia.csv"))
-NNC_nAD <- read.csv(paste0(de_folder, "NNC_vs_nAD/results/Microglia.csv"))
+nAD_NNC <- read.csv(paste0(de_folder, "nAD_vs_NNC/results/Microglia.csv"))
 lim_nAD <- read.csv(paste0(de_folder, "lim_vs_nAD/results/Microglia.csv"))
 iAD_nAD <- iAD_nAD[!is.na(iAD_nAD$padj),]
 ext_nAD <- ext_nAD[!is.na(ext_nAD$padj),]
-NNC_nAD <- NNC_nAD[!is.na(NNC_nAD$padj),]
+nAD_NNC <- nAD_NNC[!is.na(nAD_NNC$padj),]
 lim_nAD <- lim_nAD[!is.na(lim_nAD$padj),]
 
 # Calculate signed PFC and ensure values are finite
 iAD_nAD$PFC <- -log10(iAD_nAD$padj)*iAD_nAD$log2FoldChange
-NNC_nAD$PFC <- -log10(NNC_nAD$padj)*NNC_nAD$log2FoldChange
+nAD_NNC$PFC <- -log10(nAD_NNC$padj)*nAD_NNC$log2FoldChange
 ext_nAD$PFC <- -log10(ext_nAD$padj)*ext_nAD$log2FoldChange
 lim_nAD$PFC <- -log10(lim_nAD$padj)*lim_nAD$log2FoldChange
-print(sum(NNC_nAD$PFC == Inf))
+print(sum(nAD_NNC$PFC == Inf))
 print(sum(ext_nAD$PFC == Inf))
 print(sum(lim_nAD$PFC == Inf))
 print(sum(iAD_nAD$PFC == Inf))
@@ -63,11 +63,11 @@ marklist <- lapply(split(select(markers, gene), markers$state), deframe)
 names(marklist)
 
 # Compile list of comparison results
-complist <- list(NNC_nAD, ext_nAD, lim_nAD, iAD_nAD)
-names(complist) <- c("NNC_nAD", "ext_nAD", "lim_nAD", "iAD_nAD")
+complist <- list(nAD_NNC, ext_nAD, lim_nAD, iAD_nAD)
+names(complist) <- c("nAD_NNC", "ext_nAD", "lim_nAD", "iAD_nAD")
 
 # Format title names
-titles <- c("NNC vs. nAD", "iAD-Ext vs. nAD", "iAD-Lim vs. nAD", "iAD vs. nAD")
+titles <- c("nAD vs. NNC", "iAD-Ext vs. nAD", "iAD-Lim vs. nAD", "iAD vs. nAD")
 names(titles) <- names(complist)
 
 # Run GSEA for each comparison
@@ -92,8 +92,8 @@ for (comp in names(complist)) {
 # Combined dot plot 
 
 # Load data for all comparisons
-comps <- c("NNC_nAD", "iAD_nAD", "lim_nAD", "ext_nAD")
-titles <- c("NNC vs. nAD", "iAD vs. nAD", "iAD-Lim vs. nAD", "iAD-Ext vs. nAD")
+comps <- c("nAD_NNC", "iAD_nAD", "lim_nAD", "ext_nAD")
+titles <- c("nAD vs. NNC", "iAD vs. nAD", "iAD-Lim vs. nAD", "iAD-Ext vs. nAD")
 names(titles) <- comps
 df <- data.frame() 
 for (comp in comps) {
