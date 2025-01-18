@@ -21,14 +21,19 @@ suppressMessages({
   library("Seurat")
 })
 
+# Define filter operator
+`%notin%` <- Negate(`%in%`)
+
 # Define output folder
 output_dir <- "/path/to/microglia/enrichr/output/"
+dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
 # Load integrated scRNAseq immune Seurat object
 s <- readRDS("/path/to/integrated/scRNAseq/immune/object.rds")
 
-# Subset for microglia clusters
-s <- subset(s, immune_fine_updated %in% c("Mg-0", "Mg-1", "Mg-2", "Mg-3", "Mg-4"))
+# Subset for lecanemab/nAD microglia clusters
+s <- subset(s, immune_fine_updated %in% c("Mg-0", "Mg-1", "Mg-2", "Mg-3", "Mg-4") &
+              sample_merged %notin% paste0("102.", c(1, 16, 17, 19, 22)))
 gc()
 
 # Recorrect SCT data
@@ -60,6 +65,7 @@ for (cluster in unique(s$immune_fine_updated)){
 
 # Compile and save results
 all_markers <- data.table::rbindlist(markers)|>as.data.frame()
+write.csv(all_markers, paste0(output_dir, "markers.csv"), row.names = FALSE, quote = FALSE)
 
 # Identify name of hallmark database
 dbs <- listEnrichrDbs()
@@ -105,6 +111,9 @@ for (clust in unique(all_markers$cluster)) {
 df <- data.frame()
 terms_keep <- c()
 for (file in list.files(output_dir)[!str_detect(list.files(output_dir), ".pdf")]) {
+  if (file == "markers.csv") {
+    next
+  }
   print(file)
   results <- read.csv(paste0(output_dir, file), row.names = 1)
   results$cluster <- str_split_fixed(file, "_", 2)[,1]
@@ -132,7 +141,7 @@ for (file in list.files(output_dir)[!str_detect(list.files(output_dir), ".pdf")]
 df <- df[df$Term %in% unique(terms_keep),]
 
 # Define cluster colors
-colors <- c("#CC99FF", "#3399CC", "#E78AC3", "#FDB462", "#8DD3C7")
+colors <- c("#8DD3C7", "#E78AC3", "#CC99FF", "#FDB462", "#3399CC")
 names(colors) <- paste0("Mg-", 0:4)
 df$cluster <- factor(df$cluster, levels = names(colors))
 
@@ -156,9 +165,3 @@ plt <- ggplot(df, aes(x = Combined.Score, y = reorder(Term, plotorder), fill = c
 pdf(paste0(output_dir, "combined_dotplot.pdf"), width = 12, height = 8)
 print(plt)
 dev.off()
-
-
-
-
-
-
