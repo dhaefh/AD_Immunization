@@ -18,6 +18,7 @@ suppressMessages({
   library("tidyverse")
   library("enrichR")
   library("stringr")
+  library("Seurat")
 })
 
 # Define output folder
