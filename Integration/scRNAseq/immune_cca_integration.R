@@ -29,13 +29,13 @@ DefaultAssay(s) <- "RNA"
 s <- DietSeurat(s, assays = "RNA")
 gc()
 
-# Create variable for integration groups (AN1792, CAA, LCMB)
+# Create variable for cohort
 s$pool_merged <- as.character(s$pool)
 s$pool_merged[grep("^AN1792", s$pool)] <- "AN1792"
 s$pool_merged[grep("^LCMB", s$pool)] <- "LCMB"
 unique(s$pool_merged)
 
-# Split layers by merged sample ID 
+# Split layers by cohort
 s <- JoinLayers(s)
 s[["RNA"]] <- split(s[["RNA"]], f = s$pool_merged)
 
