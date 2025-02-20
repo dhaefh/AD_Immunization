@@ -34,7 +34,7 @@ all_seurat_file <- glue("{prev_out_dir}/all_samples_01_rna.rds")
 objects_out_dir <- "/path/to/objects/output/folder"
 QC_per_sample_metric_file <- "/path/to/qc/metrics/file.xlsx"
 
-# Read per sample QC metric file
+# Load per-sample QC threshold data
 QC_per_sample_metric_df <- readxl::read_xlsx(QC_per_sample_metric_file)|>as.data.frame()
 QC_per_sample_metric_df[["sample_id"]] <- sapply(QC_per_sample_metric_df[["file-name"]], function(x){str_replace_all(x,"-", ".")})
 rownames(QC_per_sample_metric_df) <- QC_per_sample_metric_df[["sample_id"]]

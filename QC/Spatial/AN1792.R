@@ -72,7 +72,7 @@ for (cur_sample in names(s_list)) {
   
   cur_s <- s_list[[cur_sample]]
   
-  # Extract UMI and nFeature thresholds for current sample
+  # Get UMI and nFeature thresholds for current sample
   cur_umi_min_cutoff <- QC_per_sample_metric_df[cur_sample, "min-UMIs-per-barcode"]
   cur_umi_max_cutoff <- QC_per_sample_metric_df[cur_sample, "max-UMIs-per-barcode"]
   cur_nfeature_min_cutoff <- QC_per_sample_metric_df[cur_sample, "min-genes-per-barcode"]

@@ -57,7 +57,7 @@ run_doubletfinder <- function(s) {
   
   # Default Seurat clustering and TSNE 
   s <- s %>% RunPCA() %>% FindNeighbors(dims = 1:10) %>% FindClusters()
-  s <- RunTSNE(s, dims = 1:10, check_duplicates = FALSE) # had to set check_duplicates to FALSE for some samples
+  s <- RunTSNE(s, dims = 1:10, check_duplicates = FALSE) 
   
   # pK Identification (no ground-truth)
   sweep.res.list <- paramSweep(s, PCs = 1:10, sct = FALSE) 

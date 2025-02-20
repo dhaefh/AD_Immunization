@@ -35,7 +35,7 @@ threshold_file <- "/path/to/qc/metrics/file.xlsx"
 # Load preprocessed Seurat object
 s <- readRDS(paste0(output_folder, "/s_preprocessed.rds"))
 
-# Load per-sample QC threshold data and set row names to sample ID
+# Load per-sample QC threshold data
 threshold_df <- readxl::read_xlsx(threshold_file) %>% data.frame()
 colnames(threshold_df) <- c("sample_id", "max_umi", "min_umi", "min_features")
 threshold_df$sample_id <- str_replace_all(threshold_df$sample_id, "-", ".")
@@ -64,7 +64,7 @@ for (cur_sample in names(s_list)) {
   # Get current sample object
   cur_s <- s_list[[cur_sample]]
   
-  # Get current UMI/nFeature cutoffs (change column names if needed)
+  # Get UMI and nFeature thresholds for current sample
   cur_umi_min_cutoff <- as.numeric(threshold_df[cur_sample, "min_umi"])
   cur_umi_max_cutoff <- as.numeric(threshold_df[cur_sample, "max_umi"])
   cur_nfeature_min_cutoff <- as.numeric(threshold_df[cur_sample, "min_features"])
