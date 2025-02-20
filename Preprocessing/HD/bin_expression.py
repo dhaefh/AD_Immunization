@@ -58,7 +58,7 @@ for sample in samples:
   # Iterate through each nucleus
   for nuclei in range(len(polys['coord'])):
     
-    # Extract coordinates for the current nuclei and convert them to (y, x) format
+    # Extract coordinates 
     coords = [(y, x) for x, y in zip(polys['coord'][nuclei][0], polys['coord'][nuclei][1])]
     
     # Create a Polygon geometry 
@@ -67,10 +67,10 @@ for sample in samples:
   # Create a GeoDataFrame using the Polygon geometries
   gdf = gpd.GeoDataFrame(geometry=geometries)
     
-  # Append sample to nuclei IDs
+  # Append sample to IDs
   gdf['id'] = [f"{sample}_{i+1}" for i, _ in enumerate(gdf.index)]
     
-  # Load Space Ranger output and initialize anndata object
+  # Load Space Ranger output and initialize AnnData object
   in_names = [sample in name for name in os.listdir(spaceranger_folder)]
   index = [in_names.index(i) for i in in_names if i == True] 
   name = os.listdir(spaceranger_folder)[index[0]]
@@ -83,15 +83,14 @@ for sample in samples:
   df_tissue_positions = df_tissue_positions.set_index('barcode')
   df_tissue_positions['index']=df_tissue_positions.index
     
-  # Add spatial coordinates to anndata object meta data
+  # Add spatial coordinates to AnnData object meta data
   adata.obs =  pd.merge(adata.obs, df_tissue_positions, left_index=True, right_index=True)
     
   # Create a GeoDataFrame from the coordinates
   geometry = [Point(xy) for xy in zip(df_tissue_positions['pxl_col_in_fullres'], df_tissue_positions['pxl_row_in_fullres'])]
   gdf_coordinates = gpd.GeoDataFrame(df_tissue_positions, geometry=geometry)
     
-  # Check which coordinates are in a cell nucleus - this returns multiple rows per barcode if barcode appears in multiple nuclei
-  # NA values are assigned to barcodes not in a cell nucleus
+  # Check which coordinates are in a cell nucleus (NA if not in a nucleus, multiple rows if in multiple nuclei) 
   result_spatial_join = gpd.sjoin(gdf_coordinates, gdf, how='left', predicate='within')
     
   # Identify nuclei associated barcodes and barcodes that are not in overlapping nuclei
@@ -104,13 +103,13 @@ for sample in samples:
   filtered_obs_mask = adata.obs_names.isin(barcodes_in_one_polygon['index'])
   filtered_adata = adata[filtered_obs_mask,:]
 
-  # Add the results of the point spatial join to the anndata object
+  # Add the results of the point spatial join to the AnnData object
   filtered_adata.obs =  pd.merge(filtered_adata.obs, barcodes_in_one_polygon[['index','geometry','id','is_within_polygon','is_not_in_an_polygon_overlap']], left_index=True, right_index=True)
     
-  # Group the data by unique nucleus IDs
+  # Group by nucleus ID
   groupby_object = filtered_adata.obs.groupby(['id'], observed=True)
     
-  # Extract the raw expression from the anndata object
+  # Extract the raw expression from the AnnData object
   counts = filtered_adata.X
 
   # Identify the number of unique nuclei and total number of genes
@@ -128,7 +127,7 @@ for sample in samples:
     row += 1
     polygon_id.append(polygons)
     
-  # Create and anndata object from the summed count matrix
+  # Create and AnnData object from the summed count matrix
   summed_counts = summed_counts.tocsr()
   grouped_filtered_adata = anndata.AnnData(X=summed_counts,obs=pd.DataFrame(polygon_id,columns=['id'],index=polygon_id),var=filtered_adata.var)
     
@@ -138,7 +137,7 @@ for sample in samples:
   # Delete geometry variable from filtered_adata
   del filtered_adata.obs['geometry']
     
-  # Save anndata objects
+  # Save AnnData objects
   filtered_adata.write(f"{result_folder}/filtered_adata.h5ad")
   grouped_filtered_adata.write(f"{result_folder}/binned_adata.h5ad")
     
@@ -159,7 +158,7 @@ for sample in samples:
   if os.path.exists(f"{result_folder}/plots") == False:
     os.mkdir(f"{result_folder}/plots")
     
-  # Load filtered anndata object for coordinate info
+  # Load filtered AnnData object for coordinate info
   adata = sc.read_h5ad(f"{result_folder}/filtered_adata.h5ad")
     
   # Get minimum and maximum x/y coordinates and add padding in each direction

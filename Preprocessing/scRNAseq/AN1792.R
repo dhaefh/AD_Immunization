@@ -50,7 +50,7 @@ run_soupx <- function(dir) {
   # Run SCTransform and PCA 
   seurat <- SCTransform(seurat) %>% RunPCA()
   
-  # Generate clusters using default parameters (SoupX is not sensitive to clustering quality - Seurat default should be fine)
+  # Generate clusters using default parameters
   seurat <- seurat %>% FindNeighbors(dims = 1:10) %>% FindClusters() 
   
   # Load in 10X data for SoupX 
@@ -68,11 +68,11 @@ run_soupx <- function(dir) {
   
   # Save automated estimate plot of contamination fraction 
   pdf(file = paste0(plot_dir, sample, "_rho_distribution.pdf"), width = 4, height = 4)
-  soupx <- autoEstCont(soupx, forceAccept = TRUE) # Set forceAccept = TRUE to allow to proceed with high contamination fraction, can look into problematic samples later and decide to exclude or manually set the fraction more in line with other samples
+  soupx <- autoEstCont(soupx, forceAccept = TRUE) 
   dev.off()
   
   # Adjust counts, rounded and unrounded to integer
-  print(paste0(sample, " Contamination Fraction: ", soupx$metaData$rho[1])) # Print contamination fraction
+  print(paste0(sample, " Contamination Fraction: ", soupx$metaData$rho[1])) 
   rounded <- adjustCounts(soupx, roundToInt = TRUE)
   unrounded <- adjustCounts(soupx)
 

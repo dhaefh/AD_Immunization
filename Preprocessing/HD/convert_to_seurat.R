@@ -24,7 +24,7 @@ suppressMessages({
 output_folder <- "/path/to/preprocessing/output/folder/"
 
 # Load python modules
-reticulate::use_virtualenv("/home/tnz0210/.local/share/r-miniconda/envs/r-reticulate")
+reticulate::use_virtualenv("/path/to/r-miniconda/envs/r-reticulate")
 scanpy <- reticulate::import('scanpy')
 anndata <- reticulate::import('anndata')
 

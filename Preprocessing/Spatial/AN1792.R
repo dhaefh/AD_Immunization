@@ -39,7 +39,7 @@ for (cur_sample in all_samples) {
   cur_dir <- paste0(cur_sample, "/outs")
   cur_slice_raw <- strsplit(cur_sample, "/")[[1]][[7]]
   
-  # Replace dash with underscore
+  # Format sample ID
   cur_slice <- str_replace_all(cur_slice_raw, "-", ".")
   
   # Initialize Seurat object
@@ -82,7 +82,7 @@ for (cur_sample in all_samples) {
   cur_dir <- paste0(cur_sample, "/outs")
   cur_slice_raw <- strsplit(cur_sample, "/")[[1]][[7]]
   
-  # Replace dash with underscore
+  # Format sample ID
   cur_slice <- str_replace_all(cur_slice_raw, "-", ".")
   
   # Initialize Seurat object
